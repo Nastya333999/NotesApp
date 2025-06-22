@@ -2,6 +2,7 @@ package com.notescollection.app.core.presentation.designsystem.components.button
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -24,6 +25,7 @@ fun NotesOutlinedButton(
     Button(
         onClick = onButtonClick,
         modifier = modifier
+            .defaultMinSize(minHeight = 48.dp)
             .border(
                 width = 1.dp,
                 shape = RoundedCornerShape(12.dp),

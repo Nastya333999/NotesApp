@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">NotesApp</string>
+
+    <string name="title_landing">Your Own Collection\nof Notes</string>
+    <string name="subtitle_landing">Capture your thoughts and ideas.</string>
+    <string name="button_get_started_text">Get started</string>
+    <string name="button_log_in_text">Log in</string>
 </resources>
