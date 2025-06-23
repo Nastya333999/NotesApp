@@ -48,7 +48,6 @@ fun PortraitLandingScreen(
 
         Box(
             modifier = Modifier
-                .padding(horizontal = horizontalPadding)
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
                 .background(
