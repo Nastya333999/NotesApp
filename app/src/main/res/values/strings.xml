@@ -5,4 +5,14 @@
     <string name="subtitle_landing">Capture your thoughts and ideas.</string>
     <string name="button_get_started_text">Get started</string>
     <string name="button_log_in_text">Log in</string>
+
+    // Login
+    <string name="login_title">Log In</string>
+    <string name="login_subtitle">Capture your thoughts and ideas.</string>
+    <string name="email_label">Email</string>
+    <string name="email_placeholder">john.doe@example.com</string>
+    <string name="password_label">Password</string>
+    <string name="password_placeholder">Password</string>
+    <string name="login_button">Log in</string>
+    <string name="no_account">Don’t have an account?</string>
 </resources>

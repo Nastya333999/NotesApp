@@ -2,16 +2,21 @@ package com.notescollection.app.core.presentation.designsystem.components.text_f
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,6 +31,11 @@ import androidx.compose.ui.unit.dp
 import com.notescollection.app.core.presentation.designsystem.theme.NotesAppTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import com.notescollection.app.core.presentation.designsystem.components.icons.IconInvisible
+import com.notescollection.app.core.presentation.designsystem.components.icons.IconVisible
 
 @Composable
 fun NotesTextField(
@@ -44,10 +54,12 @@ fun NotesTextField(
     isError: Boolean = false,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    primerColor: Color = MaterialTheme.colorScheme.primary
+    primerColor: Color = MaterialTheme.colorScheme.primary,
+    isPassword: Boolean = false,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
+    var passwordVisible by remember { mutableStateOf(false) }
 
     val borderColor = when {
         isError -> MaterialTheme.colorScheme.error
@@ -66,6 +78,11 @@ fun NotesTextField(
     val supportingTextColor =
         if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
 
+    val visualTransformation = when {
+        isPassword && !passwordVisible -> PasswordVisualTransformation()
+        else -> VisualTransformation.None
+    }
+
     BasicTextField(
         value = text,
         onValueChange = onValueChange,
@@ -74,9 +91,12 @@ fun NotesTextField(
         interactionSource = interactionSource,
         cursorBrush = SolidColor(cursorColor),
         keyboardActions = keyboardActions,
-        keyboardOptions = keyboardOptions,
+        keyboardOptions = keyboardOptions.copy(
+            keyboardType = if (isPassword) KeyboardType.Password else keyboardOptions.keyboardType
+        ),
         maxLines = maxLines,
         singleLine = singleLine,
+        visualTransformation = visualTransformation,
         decorationBox = { innerTextField ->
             Column {
                 if (!label.isNullOrBlank()) {
@@ -97,7 +117,12 @@ fun NotesTextField(
                             color = borderColor,
                             shape = RoundedCornerShape(12.dp)
                         )
-                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                        .padding(
+                            start = 16.dp,
+                            end = if (isPassword) 14.dp else 16.dp,
+                            top = 12.dp,
+                            bottom = 12.dp
+                        )
                         .fillMaxWidth(),
                     contentAlignment = Alignment.CenterStart
                 ) {
@@ -110,6 +135,19 @@ fun NotesTextField(
                     }
 
                     innerTextField()
+
+                    if (isPassword) {
+                        Icon(
+                            imageVector = if (passwordVisible) IconInvisible else IconVisible,
+                            contentDescription = if (passwordVisible) "Hide password" else "Show password",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier
+                                .align(Alignment.CenterEnd)
+                                .size(24.dp)
+                                .clickable { passwordVisible = !passwordVisible }
+                        )
+
+                    }
                 }
 
                 if (!supportingText.isNullOrBlank()) {

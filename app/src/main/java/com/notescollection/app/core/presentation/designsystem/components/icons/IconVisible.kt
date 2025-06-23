@@ -24,8 +24,8 @@ val IconVisible: ImageVector
         _eye =
             Builder(
                     name = "Eye",
-                    defaultWidth = 24.0.dp,
-                    defaultHeight = 24.0.dp,
+                    defaultWidth = 20.0.dp,
+                    defaultHeight = 20.0.dp,
                     viewportWidth = 20.0f,
                     viewportHeight = 20.0f,
                 )

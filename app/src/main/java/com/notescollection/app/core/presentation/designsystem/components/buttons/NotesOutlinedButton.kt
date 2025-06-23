@@ -21,16 +21,23 @@ fun NotesOutlinedButton(
     text: String,
     modifier: Modifier = Modifier,
     onButtonClick: () -> Unit,
+    isBorderVisible: Boolean = true
 ) {
-    Button(
-        onClick = onButtonClick,
-        modifier = modifier
+    val buttonModifier = if (isBorderVisible) {
+        modifier
             .defaultMinSize(minHeight = 48.dp)
             .border(
                 width = 1.dp,
                 shape = RoundedCornerShape(12.dp),
                 color = Primary
-            ),
+            )
+    } else {
+        modifier.defaultMinSize(minHeight = 48.dp)
+    }
+
+    Button(
+        onClick = onButtonClick,
+        modifier = buttonModifier,
         shape = RoundedCornerShape(12.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,

@@ -45,7 +45,10 @@ fun AppNavHost(
         }
 
         composable<Screens.LoginScreen> {
-            LoginRoot()
+            LoginRoot(
+                onLoginClick = {},
+                onRegisterClick = {},
+            )
         }
 
         composable<Screens.RegisterScreen> {

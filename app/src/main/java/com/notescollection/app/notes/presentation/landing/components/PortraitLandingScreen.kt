@@ -57,7 +57,7 @@ fun PortraitLandingScreen(
         ) {
             ModalBottomSheetContent(
                 onGetStartedClick = { onAction(LandingAction.GetStartedClick) },
-                onLoginClick = { onAction(LandingAction.GetStartedClick) },
+                onLoginClick = { onAction(LandingAction.LoginClick) },
                 paddingValues = PaddingValues(horizontal = horizontalPadding)
             )
         }

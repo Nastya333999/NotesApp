@@ -54,7 +54,7 @@ fun LandscapeOrientationLandingScreen(
             ) {
                 ModalBottomSheetContent(
                     onGetStartedClick = { onAction(LandingAction.GetStartedClick) },
-                    onLoginClick = { onAction(LandingAction.GetStartedClick) },
+                    onLoginClick = { onAction(LandingAction.LoginClick) },
                     paddingValues = PaddingValues(
                         vertical = horizontalPadding,
                         horizontal = 32.dp
