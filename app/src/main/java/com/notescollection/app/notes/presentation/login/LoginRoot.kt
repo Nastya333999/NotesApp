@@ -18,6 +18,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.notescollection.app.R
 import com.notescollection.app.core.presentation.designsystem.theme.NotesAppTheme
+import com.notescollection.app.core.presentation.utils.ScreenSizesPreview
 
 @Composable
 fun LoginRoot(
@@ -40,23 +41,7 @@ fun LoginScreen(
 
 }
 
-@Preview(name = "LoginScreen Landscape")
-@Composable
-private fun Preview() {
-    NotesAppTheme {
-        LoginScreen(
-            state = LoginState(),
-            onAction = {}
-        )
-    }
-}
-
-@Preview(
-    name = "LoginScreen Landscape",
-    showBackground = true,
-    widthDp = 640,
-    heightDp = 360
-)
+@ScreenSizesPreview
 @Composable
 private fun PreviewLandscape() {
     NotesAppTheme {

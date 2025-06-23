@@ -54,4 +54,6 @@ dependencies {
     debugImplementation(libs.ui.tooling)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.material3.window.size.class1)
+
 }

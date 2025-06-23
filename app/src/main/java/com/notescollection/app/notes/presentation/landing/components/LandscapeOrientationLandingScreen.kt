@@ -17,12 +17,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.notescollection.app.R
 import com.notescollection.app.core.presentation.designsystem.theme.LandingScreenBackground
+import com.notescollection.app.core.presentation.designsystem.theme.LocalAppDimensions
 import com.notescollection.app.notes.presentation.landing.LandingAction
 
 @Composable
 fun LandscapeOrientationLandingScreen(
     onAction: (LandingAction) -> Unit,
 ) {
+    val horizontalPadding = LocalAppDimensions.current.screenHorizontalPadding
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -54,7 +56,7 @@ fun LandscapeOrientationLandingScreen(
                     onGetStartedClick = { onAction(LandingAction.GetStartedClick) },
                     onLoginClick = { onAction(LandingAction.GetStartedClick) },
                     paddingValues = PaddingValues(
-                        vertical = 16.dp,
+                        vertical = horizontalPadding,
                         horizontal = 32.dp
                     )
                 )

@@ -7,14 +7,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.notescollection.app.core.presentation.designsystem.components.icons.LogoN
 import com.notescollection.app.core.presentation.designsystem.theme.NotesAppTheme
+import com.notescollection.app.core.presentation.utils.ScreenSizesPreview
 
 @Composable
 fun SplashRoot(
@@ -47,24 +45,9 @@ private fun SplashScreen(
     }
 }
 
-@Preview(
-    name = "SplashScreen Portrait",
-)
+@ScreenSizesPreview()
 @Composable
 private fun Preview() {
-    NotesAppTheme {
-        SplashScreen()
-    }
-}
-
-@Preview(
-    name = "SplashScreen Landscape",
-    showBackground = true,
-    widthDp = 640,
-    heightDp = 360
-)
-@Composable
-private fun PreviewLandscape() {
     NotesAppTheme {
         SplashScreen()
     }
