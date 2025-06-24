@@ -2,6 +2,8 @@ package com.notescollection.app.notes.presentation.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.notescollection.app.notes.domain.models.ResultWrapper
+import com.notescollection.app.notes.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
@@ -24,7 +26,6 @@ class LoginViewModel @Inject constructor(
     val state = _state
         .onStart {
             if (!hasLoadedInitialData) {
-                /** Load initial data here **/
                 hasLoadedInitialData = true
             }
         }
@@ -53,11 +54,25 @@ class LoginViewModel @Inject constructor(
                     val hasError = current.email.isBlank() || current.password.isBlank()
 
                     if (hasError) {
-                        _state.update {
-                            it.copy(isError = hasError)
+                        _state.update { it.copy(isError = true) }
+                        return@launch
+                    }
+
+                    _state.update { it.copy(isError = false) }
+
+                    when (val result = authRepository.login(current.email, current.password)) {
+                        is ResultWrapper.Success -> {
+                            eventChannel.send(LoginEvent.OnLoginClick)
                         }
-                    } else {
-                        eventChannel.send(LoginEvent.OnLoginClick)
+
+                        is ResultWrapper.Error -> {
+                            _state.update {
+                                it.copy(
+                                    isError = true,
+                                    errorMessage = result.message
+                                )
+                            }
+                        }
                     }
                 }
             }

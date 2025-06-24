@@ -16,6 +16,7 @@ hilt = "2.51.1"
 hiltAndroid = "2.51.1"
 hiltCompiler = "2.51.1"
 firebaseBom = "33.14.0"
+ktor = "3.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -42,6 +43,7 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "fir
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx", version = "19.4.3" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

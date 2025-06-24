@@ -20,6 +20,7 @@ fun NotesAppTheme(
         WindowWidthSizeClass.Compact -> CompactDimensions
         else -> TabletDimensions
     }
+
     CompositionLocalProvider(LocalAppDimensions provides dimensions) {
         MaterialTheme(
             colorScheme = LightColorScheme,

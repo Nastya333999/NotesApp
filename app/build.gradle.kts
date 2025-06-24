@@ -72,5 +72,16 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:2.3.9")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.9")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-    implementation("io.ktor:ktor-client-logging:2.3.7")
+
+    implementation(platform("io.ktor:ktor-bom:3.0.0"))
+    implementation("io.ktor:ktor-client-core")
+    implementation("io.ktor:ktor-client-okhttp")
+
+    implementation("io.ktor:ktor-serialization-kotlinx-json")
+    implementation("io.ktor:ktor-client-content-negotiation")
+
+    implementation("io.ktor:ktor-client-logging")
+
+    implementation("io.ktor:ktor-client-auth")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 }
