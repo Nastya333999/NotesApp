@@ -1,4 +1,4 @@
-package com.notescollection.app.core.presentation.designsystem.theme
+package com.notescollection.app.notes.core.presentation.designsystem.theme
 
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.unit.dp

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -20,7 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.notescollection.app.R
 import com.notescollection.app.core.presentation.designsystem.theme.LandingScreenBackground
-import com.notescollection.app.core.presentation.designsystem.theme.LocalAppDimensions
+import com.notescollection.app.notes.core.presentation.designsystem.theme.LocalAppDimensions
 import com.notescollection.app.notes.presentation.landing.LandingAction
 
 @OptIn(ExperimentalMaterial3Api::class)

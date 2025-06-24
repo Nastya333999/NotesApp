@@ -7,7 +7,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.notescollection.app.core.presentation.designsystem.theme.NotesAppTheme
 import com.notescollection.app.core.presentation.utils.ObserveAsEvents
-import com.notescollection.app.core.presentation.utils.ScreenSizesPreview
+import com.notescollection.app.notes.core.presentation.utils.ScreenSizesPreview
 import com.notescollection.app.notes.presentation.landing.components.LandscapeOrientationLandingScreen
 import com.notescollection.app.notes.presentation.landing.components.PortraitLandingScreen
 

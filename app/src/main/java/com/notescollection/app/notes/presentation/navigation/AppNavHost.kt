@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.notescollection.app.notes.presentation.landing.LandingRoot
 import com.notescollection.app.notes.presentation.login.LoginRoot
+import com.notescollection.app.notes.presentation.registration.RegistrationRoot
 import com.notescollection.app.notes.presentation.splash.SplashRoot
 
 @Composable
@@ -52,6 +53,14 @@ fun AppNavHost(
         }
 
         composable<Screens.RegisterScreen> {
+            RegistrationRoot(
+                onLoginClick = {
+                    outerNavController.navigate(Screens.LoginScreen)
+                },
+                onMainNavigate = {
+
+                }
+            )
         }
     }
 }

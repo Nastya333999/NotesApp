@@ -2,7 +2,9 @@ package com.notescollection.app.notes.data.repositoryImpl
 
 import com.notescollection.app.notes.data.api.AuthApi
 import com.notescollection.app.core.data.request.LoginRequest
+import com.notescollection.app.notes.data.request.RegisterRequest
 import com.notescollection.app.notes.data.di.token.TokenStorage
+import com.notescollection.app.notes.data.request.NetworkResult
 import com.notescollection.app.notes.domain.models.AuthResponseModel
 import com.notescollection.app.notes.domain.models.ResultWrapper
 import com.notescollection.app.notes.domain.models.toModel
@@ -24,6 +26,40 @@ class AuthRepositoryImpl @Inject constructor(
             ResultWrapper.Success(response.toModel())
         } catch (e: Exception) {
             ResultWrapper.Error(e.localizedMessage ?: "Unknown error", e)
+        }
+    }
+
+    override suspend fun onCreateAccount(
+        userName: String,
+        email: String,
+        password: String
+    ): ResultWrapper<Boolean> {
+
+        val registerModel = RegisterRequest(
+            username = userName,
+            email = email,
+            password = password
+        )
+        return when (val registerRes = authApi.register(registerModel)) {
+
+            is NetworkResult.Failure -> ResultWrapper.Error(
+                message = registerRes.message,
+                throwable = registerRes.cause
+            )
+
+            is NetworkResult.Success -> {
+                try {
+                    val loginResp = authApi.login(LoginRequest(email, password))
+
+                    tokenStorage.saveTokens(loginResp.accessToken, loginResp.refreshToken)
+                    tokenStorage.saveUserEmail(email)
+
+                    ResultWrapper.Success(true)
+                } catch (e: Exception) {
+
+                    ResultWrapper.Error(e.localizedMessage ?: "Unknown error", e)
+                }
+            }
         }
     }
 }

@@ -1,6 +1,8 @@
-package com.notescollection.app.core.data.request
+package com.notescollection.app.notes.data.request
 
-@kotlinx.serialization.Serializable
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class RegisterRequest(
     val username: String,
     val email: String,

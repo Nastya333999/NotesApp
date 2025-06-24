@@ -67,21 +67,15 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.crashlytics)
 
-    implementation("io.ktor:ktor-client-core:2.3.9")
-    implementation("io.ktor:ktor-client-okhttp:2.3.9")
-    implementation("io.ktor:ktor-client-content-negotiation:2.3.9")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.9")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    implementation(libs.androidx.hilt.navigation.compose)
 
-    implementation(platform("io.ktor:ktor-bom:3.0.0"))
-    implementation("io.ktor:ktor-client-core")
-    implementation("io.ktor:ktor-client-okhttp")
+    implementation(platform(libs.ktor.bom))
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.auth)
+    implementation(libs.ktor.client.okhttp)
+    implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.content.neg)
+    implementation(libs.ktor.serialization)
 
-    implementation("io.ktor:ktor-serialization-kotlinx-json")
-    implementation("io.ktor:ktor-client-content-negotiation")
-
-    implementation("io.ktor:ktor-client-logging")
-
-    implementation("io.ktor:ktor-client-auth")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation(libs.kotlinx.json)
 }

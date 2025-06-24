@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.notescollection.app.R
-import com.notescollection.app.core.presentation.designsystem.components.buttons.NotesFilledButton
+import com.notescollection.app.notes.core.presentation.designsystem.components.buttons.NotesFilledButton
 import com.notescollection.app.core.presentation.designsystem.components.buttons.NotesOutlinedButton
 
 @Composable

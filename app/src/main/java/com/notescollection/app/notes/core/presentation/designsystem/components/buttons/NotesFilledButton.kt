@@ -1,4 +1,4 @@
-package com.notescollection.app.core.presentation.designsystem.components.buttons
+package com.notescollection.app.notes.core.presentation.designsystem.components.buttons
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

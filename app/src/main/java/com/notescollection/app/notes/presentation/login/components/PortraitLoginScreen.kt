@@ -16,10 +16,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.notescollection.app.R
-import com.notescollection.app.core.presentation.designsystem.components.buttons.NotesFilledButton
+import com.notescollection.app.notes.core.presentation.designsystem.components.buttons.NotesFilledButton
 import com.notescollection.app.core.presentation.designsystem.components.buttons.NotesOutlinedButton
-import com.notescollection.app.core.presentation.designsystem.components.text_fields.NotesTextField
-import com.notescollection.app.core.presentation.designsystem.theme.LocalAppDimensions
+import com.notescollection.app.notes.core.presentation.designsystem.components.text_fields.NotesTextField
+import com.notescollection.app.notes.core.presentation.designsystem.theme.LocalAppDimensions
 import com.notescollection.app.notes.presentation.login.LoginAction
 import com.notescollection.app.notes.presentation.login.LoginState
 

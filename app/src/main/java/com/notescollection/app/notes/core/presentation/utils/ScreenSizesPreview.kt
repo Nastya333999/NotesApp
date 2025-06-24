@@ -1,4 +1,4 @@
-package com.notescollection.app.core.presentation.utils
+package com.notescollection.app.notes.core.presentation.utils
 
 import androidx.compose.ui.tooling.preview.Preview
 

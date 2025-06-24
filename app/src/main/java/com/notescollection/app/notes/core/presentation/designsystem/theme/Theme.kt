@@ -5,6 +5,10 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import com.notescollection.app.notes.core.presentation.designsystem.theme.CompactDimensions
+import com.notescollection.app.notes.core.presentation.designsystem.theme.LocalAppDimensions
+import com.notescollection.app.notes.core.presentation.designsystem.theme.TabletDimensions
+import com.notescollection.app.notes.core.presentation.designsystem.theme.Typography
 
 private val LightColorScheme = lightColorScheme(
     primary = Primary,

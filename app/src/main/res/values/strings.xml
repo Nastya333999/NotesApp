@@ -15,4 +15,27 @@
     <string name="password_placeholder">Password</string>
     <string name="login_button">Log in</string>
     <string name="no_account">Don’t have an account?</string>
+
+    // Register
+    <string name="create_account_title">Create account</string>
+    <string name="create_account_subtitle">Capture your thoughts and ideas.</string>
+    <string name="username_label">Username</string>
+    <string name="username_placeholder">John.doe</string>
+    <string name="repeat_password_label">Repeat password</string>
+    <string name="repeat_password_placeholder">Password</string>
+    <string name="create_account_button">Create account</string>
+    <string name="already_have_account">Already have an account?</string>
+
+    // Errors
+    <string name="error_username_too_short">Username must be at least 3 characters</string>
+    <string name="error_invalid_email">Invalid email provided</string>
+    <string name="error_weak_password">Password must be at least 8 characters and include a number or symbol</string>
+    <string name="error_passwords_do_not_match">Passwords do not match</string>
+    <string name="username_hint">Use between 3 and 20 characters for your username</string>
+    <string name="password_hint">Use 8+ characters with a number or symbol for better security</string>
+    <string name="username_error">Username must be at least 3 characters</string>
+    <string name="email_error">Invalid email provided</string>
+    <string name="password_error">Password must be at least 8 characters and include a number or symbol</string>
+    <string name="repeat_password_error">Passwords do not match</string>
+
 </resources>

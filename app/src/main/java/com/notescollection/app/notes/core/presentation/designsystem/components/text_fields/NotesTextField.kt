@@ -1,5 +1,11 @@
-package com.notescollection.app.core.presentation.designsystem.components.text_fields
+package com.notescollection.app.notes.core.presentation.designsystem.components.text_fields
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -7,7 +13,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,7 +21,6 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.notescollection.app.core.presentation.designsystem.theme.NotesAppTheme
 import androidx.compose.runtime.*
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -56,6 +61,7 @@ fun NotesTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     primerColor: Color = MaterialTheme.colorScheme.primary,
     isPassword: Boolean = false,
+    onFocusChanged: (Boolean) -> Unit = {},
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
@@ -83,10 +89,14 @@ fun NotesTextField(
         else -> VisualTransformation.None
     }
 
+    LaunchedEffect(isFocused) {
+        onFocusChanged(isFocused)
+    }
+
     BasicTextField(
         value = text,
         onValueChange = onValueChange,
-        modifier = modifier,
+        modifier = modifier.onFocusChanged { onFocusChanged(it.isFocused) },
         textStyle = textStyle,
         interactionSource = interactionSource,
         cursorBrush = SolidColor(cursorColor),
@@ -150,14 +160,25 @@ fun NotesTextField(
                     }
                 }
 
-                if (!supportingText.isNullOrBlank()) {
+                AnimatedVisibility(
+                    visible = !supportingText.isNullOrBlank(),
+                    enter = slideInVertically(
+                        animationSpec = tween(durationMillis = 400),
+                        initialOffsetY = { fullHeight -> -fullHeight }
+                    ) + fadeIn(animationSpec = tween(400)),
+                    exit = slideOutVertically(
+                        animationSpec = tween(durationMillis = 200),
+                        targetOffsetY = { fullHeight -> -fullHeight }
+                    ) + fadeOut(animationSpec = tween(200))
+                ) {
                     Text(
-                        text = supportingText,
+                        text = supportingText ?: "",
                         style = MaterialTheme.typography.bodySmall,
                         color = supportingTextColor,
                         modifier = Modifier.padding(
                             top = 7.dp,
-                            start = 12.dp
+                            start = 12.dp,
+                            end = 12.dp
                         )
                     )
                 }
@@ -194,7 +215,7 @@ private fun NotesTextFieldPreview_Error() {
             onValueChange = {},
             label = "Поле с ошибкой",
             hintText = "Введите текст",
-            supportingText = "Произошла ошибка",
+            supportingText = "Use between 3 and 20 characters for your username",
             isError = true,
             modifier = Modifier
                 .padding(16.dp)
