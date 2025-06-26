@@ -8,5 +8,3 @@ interface TokenStorage {
     fun getUserEmail(): String?
     fun saveUserEmail(email: String)
 }
-
-data class TokenPair(val accessToken: String, val refreshToken: String)

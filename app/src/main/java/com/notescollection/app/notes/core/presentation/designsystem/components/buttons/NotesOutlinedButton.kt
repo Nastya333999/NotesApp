@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.notescollection.app.core.presentation.designsystem.theme.NotesAppTheme
-import com.notescollection.app.core.presentation.designsystem.theme.Primary
+import com.notescollection.app.notes.core.presentation.designsystem.theme.NotesAppTheme
+import com.notescollection.app.notes.core.presentation.designsystem.theme.Primary
 
 @Composable
 fun NotesOutlinedButton(

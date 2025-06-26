@@ -1,6 +1,5 @@
 package com.notescollection.app.notes.presentation.login
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,18 +7,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.notescollection.app.core.presentation.designsystem.theme.NotesAppTheme
-import com.notescollection.app.core.presentation.utils.ObserveAsEvents
+import com.notescollection.app.notes.core.presentation.designsystem.theme.NotesAppTheme
+import com.notescollection.app.notes.core.presentation.utils.DeviceConfiguration
+import com.notescollection.app.notes.core.presentation.utils.ObserveAsEvents
 import com.notescollection.app.notes.core.presentation.utils.ScreenSizesPreview
 import com.notescollection.app.notes.presentation.login.components.LandscapeOrientationLoginScreen
 import com.notescollection.app.notes.presentation.login.components.PortraitLoginScreen
+import com.notescollection.app.notes.presentation.login.components.TabletLoginScreen
 
 @Composable
 fun LoginRoot(
@@ -47,7 +49,7 @@ fun LoginRoot(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun LoginScreen(
     state: LoginState,
@@ -61,19 +63,31 @@ fun LoginScreen(
             .padding(top = 8.dp)
     ) {
 
-        val configuration = LocalConfiguration.current
-        val orientation = configuration.orientation
+        val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+        val deviceConfiguration = DeviceConfiguration.fromWindowSizeClass(windowSizeClass)
+        when(deviceConfiguration) {
 
-        when (orientation) {
-            Configuration.ORIENTATION_PORTRAIT -> PortraitLoginScreen(
-                state = state,
-                onAction = onAction
-            )
+            DeviceConfiguration.MOBILE_PORTRAIT -> {
+                PortraitLoginScreen(
+                    state = state,
+                    onAction = onAction
+                )
+            }
+            DeviceConfiguration.MOBILE_LANDSCAPE -> {
+                LandscapeOrientationLoginScreen(
+                    state = state,
+                    onAction = onAction,
+                )
+            }
 
-            else -> LandscapeOrientationLoginScreen(
-                state = state,
-                onAction = onAction
-            )
+            DeviceConfiguration.TABLET_PORTRAIT,
+            DeviceConfiguration.TABLET_LANDSCAPE,
+            DeviceConfiguration.DESKTOP -> {
+                TabletLoginScreen(
+                    state = state,
+                    onAction = onAction,
+                )
+            }
         }
     }
 }

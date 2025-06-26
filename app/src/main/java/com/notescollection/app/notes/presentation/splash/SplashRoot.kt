@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.notescollection.app.core.presentation.designsystem.components.icons.LogoN
-import com.notescollection.app.core.presentation.designsystem.theme.NotesAppTheme
+import com.notescollection.app.notes.core.presentation.designsystem.theme.NotesAppTheme
 import com.notescollection.app.notes.core.presentation.utils.ScreenSizesPreview
 
 @Composable

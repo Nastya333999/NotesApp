@@ -16,7 +16,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.notescollection.app.R
-import com.notescollection.app.core.presentation.designsystem.theme.LandingScreenBackground
+import com.notescollection.app.notes.core.presentation.designsystem.theme.LandingScreenBackground
 import com.notescollection.app.notes.core.presentation.designsystem.theme.LocalAppDimensions
 import com.notescollection.app.notes.presentation.landing.LandingAction
 

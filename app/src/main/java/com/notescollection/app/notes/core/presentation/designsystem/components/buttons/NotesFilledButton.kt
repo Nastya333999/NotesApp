@@ -16,10 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.notescollection.app.core.presentation.designsystem.theme.NotesAppTheme
-import com.notescollection.app.core.presentation.designsystem.theme.OnSurface12
-import com.notescollection.app.core.presentation.designsystem.theme.Primary
-import com.notescollection.app.core.presentation.designsystem.theme.onPrimary
+import com.notescollection.app.notes.core.presentation.designsystem.theme.NotesAppTheme
+import com.notescollection.app.notes.core.presentation.designsystem.theme.OnSurface12
+import com.notescollection.app.notes.core.presentation.designsystem.theme.Primary
+import com.notescollection.app.notes.core.presentation.designsystem.theme.onPrimary
 
 @Composable
 fun NotesFilledButton(

@@ -1,7 +1,6 @@
-package com.notescollection.app.core.presentation.designsystem.theme
+package com.notescollection.app.notes.core.presentation.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
-import com.notescollection.app.notes.presentation.navigation.Screens
 
 val OnSurface = Color(0xFF1B1B1C)
 val OnSurfaceVar = Color(0xFF535364)

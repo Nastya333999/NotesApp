@@ -4,9 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.notescollection.app.R
 import com.notescollection.app.core.presentation.designsystem.components.buttons.NotesOutlinedButton
 import com.notescollection.app.notes.core.presentation.designsystem.theme.LocalAppDimensions
-import com.notescollection.app.core.presentation.designsystem.theme.NotesAppTheme
+import com.notescollection.app.notes.core.presentation.designsystem.theme.NotesAppTheme
 import com.notescollection.app.notes.core.presentation.utils.ScreenSizesPreview
 import com.notescollection.app.notes.core.presentation.designsystem.components.buttons.NotesFilledButton
 import com.notescollection.app.notes.core.presentation.designsystem.components.text_fields.NotesTextField
@@ -47,14 +50,16 @@ fun LandscapeOrientationRegistrationScreen(
                 shape = RoundedCornerShape(20.dp, 20.dp, 0.dp, 0.dp)
             )
             .padding(
-                start = 60.dp,
-                top = 32.dp
+                horizontal = 32.dp,
+                vertical = 32.dp
             )
+            .consumeWindowInsets(WindowInsets.navigationBars)
     ) {
         Column(
             modifier = Modifier
                 .weight(1.0f)
                 .padding(start = LocalAppDimensions.current.textHorizontalPadding)
+                .verticalScroll(rememberScrollState())
         ) {
             Text(
                 text = stringResource(R.string.create_account_title),
