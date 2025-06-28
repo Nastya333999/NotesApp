@@ -7,4 +7,7 @@ sealed interface RegistrationAction {
     data class OnRepeatPasswordChanged(val value: String) : RegistrationAction
     object OnCreateAccountClick : RegistrationAction
     object OnLoginClick : RegistrationAction
+
+    data class OnPasswordVisibilityChange(val visible: Boolean) : RegistrationAction
+    data class OnRepeatPasswordVisibilityChange(val visible: Boolean) : RegistrationAction
 }

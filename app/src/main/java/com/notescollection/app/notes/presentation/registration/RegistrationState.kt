@@ -17,4 +17,7 @@ data class RegistrationState(
     val emailError: String? = null,
     val passwordError: String? = null,
     val repeatPasswordError: String? = null,
+
+    val isPasswordVisible: Boolean = false,
+    val isRepeatPasswordVisible: Boolean = false
 )

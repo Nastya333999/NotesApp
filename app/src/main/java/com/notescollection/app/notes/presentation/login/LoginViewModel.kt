@@ -82,6 +82,10 @@ class LoginViewModel @Inject constructor(
                     eventChannel.send(LoginEvent.OnRegisterClick)
                 }
             }
+
+            is LoginAction.OnPasswordVisibilityChange -> {
+                _state.update { it.copy(isPasswordVisible = action.visible) }
+            }
         }
     }
 }

@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -58,9 +59,8 @@ class RegistrationViewModel @Inject constructor(
                         email = current.email,
                         password = current.password
                     )) {
-                        is ResultWrapper.Error -> {
-                            // TODO()
-                        }
+                        is ResultWrapper.Error -> {}
+
                         is ResultWrapper.Success<*> -> {
                             eventChannel.send(RegistrationEvent.OnCreateAccount)
                         }
@@ -72,6 +72,18 @@ class RegistrationViewModel @Inject constructor(
                 viewModelScope.launch {
                     eventChannel.send(RegistrationEvent.OnLoginClick)
                 }
+            }
+
+            is RegistrationAction.OnPasswordVisibilityChange -> _state.update {
+                it.copy(
+                    isPasswordVisible = action.visible
+                )
+            }
+
+            is RegistrationAction.OnRepeatPasswordVisibilityChange -> _state.update {
+                it.copy(
+                    isRepeatPasswordVisible = action.visible
+                )
             }
         }
     }

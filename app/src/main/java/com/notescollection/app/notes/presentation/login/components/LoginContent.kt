@@ -41,6 +41,8 @@ fun LoginContent(
             onValueChange = { onAction(LoginAction.OnPasswordChange(it)) },
             hintText = stringResource(R.string.password_label),
             isPassword = true,
+            onPasswordToggleClick = { onAction(LoginAction.OnPasswordVisibilityChange(!state.isPasswordVisible)) },
+            passwordVisible = state.isPasswordVisible,
         )
 
         Spacer(modifier = Modifier.height(24.dp))

@@ -62,10 +62,11 @@ fun NotesTextField(
     primerColor: Color = MaterialTheme.colorScheme.primary,
     isPassword: Boolean = false,
     onFocusChanged: (Boolean) -> Unit = {},
+    passwordVisible: Boolean = false,
+    onPasswordToggleClick: () -> Unit = {},
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
-    var passwordVisible by remember { mutableStateOf(false) }
 
     val borderColor = when {
         isError -> MaterialTheme.colorScheme.error
@@ -84,9 +85,10 @@ fun NotesTextField(
     val supportingTextColor =
         if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
 
-    val visualTransformation = when {
-        isPassword && !passwordVisible -> PasswordVisualTransformation()
-        else -> VisualTransformation.None
+    val visualTransformation = if (isPassword && !passwordVisible) {
+        PasswordVisualTransformation()
+    } else {
+        VisualTransformation.None
     }
 
     LaunchedEffect(isFocused) {
@@ -148,15 +150,14 @@ fun NotesTextField(
 
                     if (isPassword) {
                         Icon(
-                            imageVector = if (passwordVisible) IconInvisible else IconVisible,
+                            imageVector = if (passwordVisible) IconVisible else IconInvisible,
                             contentDescription = if (passwordVisible) "Hide password" else "Show password",
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier
                                 .align(Alignment.CenterEnd)
                                 .size(24.dp)
-                                .clickable { passwordVisible = !passwordVisible }
+                                .clickable { onPasswordToggleClick() } // 👈 вызов
                         )
-
                     }
                 }
 

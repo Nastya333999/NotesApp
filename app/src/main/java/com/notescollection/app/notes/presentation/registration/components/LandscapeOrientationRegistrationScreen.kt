@@ -126,6 +126,10 @@ fun LandscapeOrientationRegistrationScreen(
                     else "",
                 onFocusChanged = { isPasswordFieldFocused = it },
                 isError = state.isPasswordError,
+                onPasswordToggleClick = {
+                    onAction(RegistrationAction.OnPasswordVisibilityChange(!state.isPasswordVisible))
+                },
+                passwordVisible = state.isPasswordVisible,
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -138,7 +142,11 @@ fun LandscapeOrientationRegistrationScreen(
                 hintText = stringResource(R.string.password_label),
                 isPassword = true,
                 isError = state.isRepeatPasswordError,
-                supportingText = state.repeatPasswordError
+                supportingText = state.repeatPasswordError,
+                onPasswordToggleClick = {
+                    onAction(RegistrationAction.OnRepeatPasswordVisibilityChange(!state.isRepeatPasswordVisible))
+                },
+                passwordVisible = state.isRepeatPasswordVisible,
             )
 
             Spacer(modifier = Modifier.height(24.dp))

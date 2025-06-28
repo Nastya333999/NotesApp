@@ -6,4 +6,6 @@ sealed interface LoginAction {
 
     data object OnLoginClick : LoginAction
     data object OnRegisterClick : LoginAction
+
+    data class OnPasswordVisibilityChange(val visible: Boolean) : LoginAction
 }
