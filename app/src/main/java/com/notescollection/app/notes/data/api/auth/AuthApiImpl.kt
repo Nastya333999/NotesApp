@@ -1,6 +1,6 @@
-package com.notescollection.app.notes.data.api
+package com.notescollection.app.notes.data.api.auth
 
-import com.notescollection.app.core.data.request.LoginRequest
+import com.notescollection.app.notes.data.request.LoginRequest
 import com.notescollection.app.core.data.request.RefreshTokenRequest
 import com.notescollection.app.notes.data.request.ErrorResponse
 import com.notescollection.app.notes.data.request.NetworkResult
@@ -20,17 +20,16 @@ class AuthApiImpl(
     private val client: HttpClient
 ) : AuthApi {
 
-    private val BASE_URL = "https://notemark.pl-coding.com" // TODO() перенести в BuildConfig
-
     override suspend fun register(
         request: RegisterRequest
     ): NetworkResult<Unit> = try {
 
-        val response: HttpResponse = client.post("/api/auth/register") { // TODO() перенести строки в константы
-            header("X-User-Email", "a.dmytriieva.a@gmail.com") // TODO() перенести в BuildConfig
-            contentType(ContentType.Application.Json)
-            setBody(request)
-        }
+        val response: HttpResponse =
+            client.post(REGISTER_PATH) {
+                header(X_USER_EMAIL, MOCK_EMAIL)
+                contentType(ContentType.Application.Json)
+                setBody(request)
+            }
 
         if (response.status == HttpStatusCode.OK) {
             NetworkResult.Success(Unit)
@@ -41,21 +40,31 @@ class AuthApiImpl(
         }
 
     } catch (e: Exception) {
-        NetworkResult.Failure(e.localizedMessage ?: "Unknown error")
+        NetworkResult.Failure(e.localizedMessage ?: ERROR_UNKNOWN)
     }
 
     override suspend fun login(request: LoginRequest): AuthResponse {
-        return client.post("${BASE_URL}/api/auth/login") {
-            header("X-User-Email", "a.dmytriieva.a@gmail.com")
+        return client.post(BASE_URL + LOGIN_PATH) {
+            header(X_USER_EMAIL, MOCK_EMAIL)
             contentType(ContentType.Application.Json)
             setBody(request)
         }.body()
     }
 
     override suspend fun refreshToken(request: RefreshTokenRequest): AuthResponse {
-        return client.post("/api/auth/refresh") {
+        return client.post(REFRESH_TOKEN_PATH) {
             contentType(ContentType.Application.Json)
             setBody(request)
         }.body()
+    }
+
+    companion object {
+        private const val BASE_URL = "https://notemark.pl-coding.com"
+        private const val REGISTER_PATH = "/api/auth/register"
+        private const val LOGIN_PATH = "/api/auth/login"
+        private const val REFRESH_TOKEN_PATH = "/api/auth/refresh"
+        private const val X_USER_EMAIL = "X-User-Email"
+        private const val MOCK_EMAIL = "a.dmytriieva.a@gmail.com"
+        private const val ERROR_UNKNOWN = "Unknown error"
     }
 }

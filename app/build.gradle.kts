@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.dagger.hilt.android)
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.kotlin.parcelize)
 }
 
 android {
@@ -80,4 +81,15 @@ dependencies {
     implementation(libs.ktor.serialization)
 
     implementation(libs.kotlinx.json)
+
+    implementation(libs.kotlinx.collections.immutable)
+
+    ksp(libs.room.compiler)
+    ksp(libs.room.paging)
+    implementation(libs.room.ktx)
+    implementation(libs.room.paging)
+    ksp(libs.room.compiler)
+
+    implementation(libs.androidx.paging.runtime.ktx)
+    implementation(libs.androidx.paging.compose)
 }

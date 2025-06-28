@@ -1,6 +1,6 @@
-package com.notescollection.app.notes.data.api
+package com.notescollection.app.notes.data.api.auth
 
-import com.notescollection.app.core.data.request.LoginRequest
+import com.notescollection.app.notes.data.request.LoginRequest
 import com.notescollection.app.core.data.request.RefreshTokenRequest
 import com.notescollection.app.notes.data.request.NetworkResult
 import com.notescollection.app.notes.data.request.RegisterRequest

@@ -2,7 +2,7 @@ package com.notescollection.app.notes.presentation.navigation
 
 import kotlinx.serialization.Serializable
 
-internal sealed interface Screens {
+sealed interface Screens {
 
     @Serializable
     data object SplashScreen : Screens
@@ -15,4 +15,18 @@ internal sealed interface Screens {
 
     @Serializable
     data object RegisterScreen : Screens
+
+    @Serializable
+    data object NoteListScreen : Screens
+
+    @Serializable
+    data class CreateNoteScreen(val noteId: String? = null) : Screens {
+        companion object {
+            const val routeBase = "createNote"
+            const val noteIdArg = "noteId"
+
+            fun route(noteId: String? = null): String =
+                if (noteId != null) "$routeBase/$noteId" else routeBase
+        }
+    }
 }

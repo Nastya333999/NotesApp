@@ -1,4 +1,4 @@
-package com.notescollection.app.core.data.di
+package com.notescollection.app.notes.data.di
 
 import javax.inject.Qualifier
 

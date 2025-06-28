@@ -7,4 +7,7 @@ interface TokenStorage {
     fun saveTokens(accessToken: String, refreshToken: String)
     fun getUserEmail(): String?
     fun saveUserEmail(email: String)
+
+    fun saveUserName(userName: String)
+    fun getUserName(): String?
 }

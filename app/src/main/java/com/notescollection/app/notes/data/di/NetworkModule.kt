@@ -1,8 +1,10 @@
 package com.notescollection.app.notes.data.di
 
 import android.content.Context
-import com.notescollection.app.notes.data.api.AuthApi
-import com.notescollection.app.notes.data.api.AuthApiImpl
+import com.notescollection.app.notes.data.api.auth.AuthApi
+import com.notescollection.app.notes.data.api.auth.AuthApiImpl
+import com.notescollection.app.notes.data.api.notes.NotesApi
+import com.notescollection.app.notes.data.api.notes.NotesApiImpl
 import com.notescollection.app.notes.data.di.token.InMemoryTokenStorage
 import com.notescollection.app.notes.data.di.token.TokenStorage
 import com.notescollection.app.notes.data.response.AuthResponse
@@ -66,6 +68,8 @@ object KtorNetworkModule {
         install(Logging) {
             logger = Logger.SIMPLE
             level = LogLevel.BODY
+            sanitizeHeader { header -> false }
+            level = LogLevel.ALL
         }
 
         install(Auth) {
@@ -117,4 +121,8 @@ object KtorNetworkModule {
     @Provides
     @Singleton
     fun provideAuthApi(client: HttpClient): AuthApi = AuthApiImpl(client)
+
+    @Provides
+    @Singleton
+    fun provideNotesApi(client: HttpClient): NotesApi = NotesApiImpl(client)
 }

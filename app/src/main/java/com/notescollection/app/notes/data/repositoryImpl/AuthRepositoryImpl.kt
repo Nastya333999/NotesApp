@@ -1,7 +1,7 @@
 package com.notescollection.app.notes.data.repositoryImpl
 
-import com.notescollection.app.notes.data.api.AuthApi
-import com.notescollection.app.core.data.request.LoginRequest
+import com.notescollection.app.notes.data.api.auth.AuthApi
+import com.notescollection.app.notes.data.request.LoginRequest
 import com.notescollection.app.notes.data.request.RegisterRequest
 import com.notescollection.app.notes.data.di.token.TokenStorage
 import com.notescollection.app.notes.data.request.NetworkResult
@@ -53,6 +53,7 @@ class AuthRepositoryImpl @Inject constructor(
 
                     tokenStorage.saveTokens(loginResp.accessToken, loginResp.refreshToken)
                     tokenStorage.saveUserEmail(email)
+                    tokenStorage.saveUserName(userName)
 
                     ResultWrapper.Success(true)
                 } catch (e: Exception) {
@@ -61,5 +62,10 @@ class AuthRepositoryImpl @Inject constructor(
                 }
             }
         }
+    }
+
+    override suspend fun getUserFirstNaeLetter(): String {
+        val userName: String? = tokenStorage.getUserName()
+        return userName?.take(2)?.uppercase() ?: "PL"
     }
 }

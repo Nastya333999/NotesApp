@@ -3,7 +3,7 @@ package com.notescollection.app.notes.data.request
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class LoginRequest(
-    val email: String,
-    val password: String
+data class NotesResponse(
+    val notes: List<NoteResponse>,
+    val total: Int
 )
