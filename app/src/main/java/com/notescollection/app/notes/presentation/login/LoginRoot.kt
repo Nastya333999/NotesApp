@@ -1,5 +1,6 @@
 package com.notescollection.app.notes.presentation.login
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,12 +29,14 @@ fun LoginRoot(
     onLoginClick: () -> Unit,
     onRegisterClick: () -> Unit,
 ) {
-    val  viewModel: LoginViewModel = hiltViewModel()
+    val viewModel: LoginViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             is LoginEvent.OnLoginClick -> {
+                Log.d("LoginViewModeleeee", "  is LoginEvent.OnLoginClick -> {")
+
                 onLoginClick()
             }
 
@@ -65,7 +68,7 @@ fun LoginScreen(
 
         val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
         val deviceConfiguration = DeviceConfiguration.fromWindowSizeClass(windowSizeClass)
-        when(deviceConfiguration) {
+        when (deviceConfiguration) {
 
             DeviceConfiguration.MOBILE_PORTRAIT -> {
                 PortraitLoginScreen(
@@ -73,6 +76,7 @@ fun LoginScreen(
                     onAction = onAction
                 )
             }
+
             DeviceConfiguration.MOBILE_LANDSCAPE -> {
                 LandscapeOrientationLoginScreen(
                     state = state,

@@ -1,14 +1,12 @@
 package com.notescollection.app.notes.presentation.registration
 
 import android.content.Context
-import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.notescollection.app.R
 import com.notescollection.app.notes.domain.models.ResultWrapper
 import com.notescollection.app.notes.domain.repository.AuthRepository
-import com.notescollection.app.notes.presentation.login.LoginEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
@@ -62,6 +60,12 @@ class RegistrationViewModel @Inject constructor(
                         is ResultWrapper.Error -> {}
 
                         is ResultWrapper.Success<*> -> {
+                            _state.update {
+                                it.copy(
+                                    toastText = context.getString(R.string.success_account_created),
+                                    isToastError = false
+                                )
+                            }
                             eventChannel.send(RegistrationEvent.OnCreateAccount)
                         }
                     }
@@ -84,6 +88,10 @@ class RegistrationViewModel @Inject constructor(
                 it.copy(
                     isRepeatPasswordVisible = action.visible
                 )
+            }
+
+            is RegistrationAction.OnToastShown -> {
+                _state.update { it.copy(toastText = null) }
             }
         }
     }

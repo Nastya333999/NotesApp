@@ -19,5 +19,8 @@ data class RegistrationState(
     val repeatPasswordError: String? = null,
 
     val isPasswordVisible: Boolean = false,
-    val isRepeatPasswordVisible: Boolean = false
+    val isRepeatPasswordVisible: Boolean = false,
+
+    val toastText: String? = null,
+    val isToastError: Boolean = false
 )

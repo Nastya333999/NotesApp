@@ -2,6 +2,7 @@ package com.notescollection.app.notes.presentation.noteList
 
 import android.annotation.SuppressLint
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.notescollection.app.notes.core.presentation.designsystem.components.StatusBarStyle
 import com.notescollection.app.notes.core.presentation.designsystem.theme.NotesAppTheme
 import com.notescollection.app.notes.core.presentation.utils.DeviceConfiguration
 import com.notescollection.app.notes.core.presentation.utils.ObserveAsEvents
@@ -32,7 +34,10 @@ fun NoteListRoot(
     val viewModel: NoteListViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+
     LaunchedEffect(Unit) {
+        Log.d("LoginViewModeleeee", "NoteListRoot LaunchedEffect(Unit) {")
+
         viewModel.getNotes()
     }
     ObserveAsEvents(viewModel.events) { event: NoteListEvent ->
@@ -67,6 +72,7 @@ fun NoteListScreen(
             .statusBarsPadding()
             .background(MaterialTheme.colorScheme.primary),
     ) {
+        StatusBarStyle()
         val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
         val deviceConfiguration = DeviceConfiguration.fromWindowSizeClass(windowSizeClass)
         when (deviceConfiguration) {

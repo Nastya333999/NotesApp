@@ -19,9 +19,9 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun login(email: String, password: String): ResultWrapper<AuthResponseModel> {
         return try {
             val response = authApi.login(LoginRequest(email, password))
-
             tokenStorage.saveTokens(response.accessToken, response.refreshToken)
             tokenStorage.saveUserEmail(email)
+            tokenStorage.saveUserName(response.userName)
 
             ResultWrapper.Success(response.toModel())
         } catch (e: Exception) {
@@ -48,18 +48,8 @@ class AuthRepositoryImpl @Inject constructor(
             )
 
             is NetworkResult.Success -> {
-                try {
-                    val loginResp = authApi.login(LoginRequest(email, password))
+                ResultWrapper.Success(true)
 
-                    tokenStorage.saveTokens(loginResp.accessToken, loginResp.refreshToken)
-                    tokenStorage.saveUserEmail(email)
-                    tokenStorage.saveUserName(userName)
-
-                    ResultWrapper.Success(true)
-                } catch (e: Exception) {
-
-                    ResultWrapper.Error(e.localizedMessage ?: "Unknown error", e)
-                }
             }
         }
     }

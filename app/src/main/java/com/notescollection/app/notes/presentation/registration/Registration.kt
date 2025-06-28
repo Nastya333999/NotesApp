@@ -10,12 +10,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.notescollection.app.notes.core.presentation.designsystem.components.CustomToast
 import com.notescollection.app.notes.core.presentation.designsystem.theme.NotesAppTheme
 import com.notescollection.app.notes.core.presentation.utils.DeviceConfiguration
 import com.notescollection.app.notes.core.presentation.utils.ObserveAsEvents
@@ -26,11 +29,11 @@ import com.notescollection.app.notes.presentation.login.components.TabletLoginSc
 import com.notescollection.app.notes.presentation.registration.components.LandscapeOrientationRegistrationScreen
 import com.notescollection.app.notes.presentation.registration.components.PortraitRegistrationScreen
 import com.notescollection.app.notes.presentation.registration.components.TabletRegistrationScreen
+import kotlinx.coroutines.delay
 
 @Composable
 fun RegistrationRoot(
     onLoginClick: () -> Unit,
-    onMainNavigate: () -> Unit,
     viewModel: RegistrationViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -42,7 +45,7 @@ fun RegistrationRoot(
             }
 
             is RegistrationEvent.OnCreateAccount -> {
-                onMainNavigate()
+                onLoginClick()
             }
         }
     }
@@ -66,6 +69,21 @@ fun RegistrationScreen(
             .statusBarsPadding()
             .padding(top = 8.dp)
     ) {
+
+        state.toastText?.let { text ->
+            LaunchedEffect(text) {
+                delay(2000)
+                onAction(RegistrationAction.OnToastShown)
+            }
+
+            CustomToast(
+                text = text,
+                isError = state.isToastError,
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 72.dp)
+            )
+        }
 
         val configuration = LocalConfiguration.current
         val orientation = configuration.orientation

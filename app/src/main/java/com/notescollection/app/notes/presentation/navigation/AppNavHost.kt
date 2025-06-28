@@ -1,6 +1,7 @@
 package com.notescollection.app.notes.presentation.navigation
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -56,6 +57,8 @@ fun AppNavHost(
         composable<Screens.LoginScreen> {
             LoginRoot(
                 onLoginClick = {
+                    Log.d("LoginViewModeleeee", " composable<Screens.LoginScreen> {  is LoginEvent.OnLoginClick -> {")
+
                     outerNavController.navigate(Screens.NoteListScreen)
                 },
                 onRegisterClick = {
@@ -69,9 +72,6 @@ fun AppNavHost(
                 onLoginClick = {
                     outerNavController.navigate(Screens.LoginScreen)
                 },
-                onMainNavigate = {
-                    outerNavController.navigate(Screens.NoteListScreen)
-                }
             )
         }
 
@@ -98,14 +98,12 @@ fun AppNavHost(
         ) { backStackEntry ->
             val noteId = backStackEntry.arguments?.getString(Screens.CreateNoteScreen.noteIdArg)
             CreateNoteRoot(
-                noteId = noteId,
                 navigateBack = { outerNavController.popBackStack() }
             )
         }
 
         composable(Screens.CreateNoteScreen.routeBase) {
             CreateNoteRoot(
-                noteId = null,
                 navigateBack = { outerNavController.popBackStack() }
             )
         }

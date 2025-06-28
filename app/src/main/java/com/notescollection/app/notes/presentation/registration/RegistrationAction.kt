@@ -10,4 +10,6 @@ sealed interface RegistrationAction {
 
     data class OnPasswordVisibilityChange(val visible: Boolean) : RegistrationAction
     data class OnRepeatPasswordVisibilityChange(val visible: Boolean) : RegistrationAction
+
+    object OnToastShown : RegistrationAction
 }

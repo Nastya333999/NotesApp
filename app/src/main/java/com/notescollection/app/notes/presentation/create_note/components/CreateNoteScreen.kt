@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -80,6 +81,7 @@ fun CreateNoteContent(
                     color = MaterialTheme.colorScheme.surface,
                 )
                 .verticalScroll(rememberScrollState())
+                .imePadding()
         ) {
             NotesToolBar(
                 modifier = Modifier.fillMaxWidth(),
@@ -126,14 +128,13 @@ fun CreateNoteContent(
                 onValueChange = { onAction(CreateNoteAction.OnDescriptionChange(it)) },
                 modifier = Modifier
                     .windowInsetsPadding(WindowInsets.displayCutout)
-                    .fillMaxWidth(),
+                    .fillMaxSize(),
                 placeholder = {
                     Text(
                         text = stringResource(R.string.description_label),
                         style = MaterialTheme.typography.bodyLarge,
                     )
                 },
-                maxLines = 1,
                 colors = TextFieldDefaults.colors().copy(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,

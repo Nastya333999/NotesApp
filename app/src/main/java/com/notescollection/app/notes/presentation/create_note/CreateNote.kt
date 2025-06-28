@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.notescollection.app.notes.core.presentation.designsystem.components.StatusBarStyle
 import com.notescollection.app.notes.core.presentation.designsystem.theme.NotesAppTheme
 import com.notescollection.app.notes.core.presentation.utils.DeviceConfiguration
 import com.notescollection.app.notes.core.presentation.utils.ObserveAsEvents
@@ -25,18 +26,9 @@ import com.notescollection.app.notes.presentation.create_note.components.CreateN
 @Composable
 fun CreateNoteRoot(
     navigateBack: () -> Unit,
-    noteId: String? = null
 ) {
     val viewModel: CreateNoteViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
-
-    LaunchedEffect(noteId) {
-        if (noteId == null) {
-            viewModel.init(null)
-        } else {
-            viewModel.loadNote(noteId)
-        }
-    }
 
     ObserveAsEvents(viewModel.events) { event: CreateNoteEvent ->
         when (event) {
@@ -68,8 +60,10 @@ fun CreateNoteScreen(
             .systemBarsPadding()
             .background(MaterialTheme.colorScheme.primary),
     ) {
+        StatusBarStyle()
         val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
         val deviceConfiguration = DeviceConfiguration.fromWindowSizeClass(windowSizeClass)
+
         when (deviceConfiguration) {
             DeviceConfiguration.MOBILE_PORTRAIT -> {
                 CreateNoteContent(

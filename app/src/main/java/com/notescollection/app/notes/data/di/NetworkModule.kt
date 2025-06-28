@@ -7,6 +7,7 @@ import com.notescollection.app.notes.data.api.notes.NotesApi
 import com.notescollection.app.notes.data.api.notes.NotesApiImpl
 import com.notescollection.app.notes.data.di.token.InMemoryTokenStorage
 import com.notescollection.app.notes.data.di.token.TokenStorage
+import com.notescollection.app.notes.data.response.AuthRefreshResponse
 import com.notescollection.app.notes.data.response.AuthResponse
 import dagger.Module
 import dagger.Provides
@@ -91,7 +92,7 @@ object KtorNetworkModule {
                         }
 
                         if (response.status.isSuccess()) {
-                            val newTokens = response.body<AuthResponse>()
+                            val newTokens = response.body<AuthRefreshResponse>()
                             tokenStorage.saveTokens(newTokens.accessToken, newTokens.refreshToken)
 
                             BearerTokens(
@@ -111,10 +112,7 @@ object KtorNetworkModule {
         defaultRequest {
             url(BASE_URL)
             contentType(ContentType.Application.Json)
-
-            tokenStorage.getUserEmail()?.let { email ->
-                header("X-User-Email", email)
-            }
+            header("X-User-Email", "a.dmytriieva.a@gmail.com")
         }
     }
 

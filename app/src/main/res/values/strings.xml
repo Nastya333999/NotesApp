@@ -25,6 +25,7 @@
     <string name="repeat_password_placeholder">Password</string>
     <string name="create_account_button">Create account</string>
     <string name="already_have_account">Already have an account?</string>
+    <string name="success_account_created">Account successfully created</string>
 
     // Errors
     <string name="error_username_too_short">Username must be at least 3 characters</string>

@@ -5,6 +5,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.notescollection.app.R
@@ -23,11 +24,15 @@ import javax.inject.Inject
 import com.notescollection.app.notes.presentation.noteList.models.toUiModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 
+@RequiresApi(Build.VERSION_CODES.O)
 @HiltViewModel
 class CreateNoteViewModel @Inject constructor(
     private val notesRepository: NotesRepository,
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+    val noteId: String? = savedStateHandle["noteId"]
 
     private val _state = MutableStateFlow(CreateNoteState())
     val state: StateFlow<CreateNoteState> = _state
@@ -35,6 +40,13 @@ class CreateNoteViewModel @Inject constructor(
     private val _eventChannel = Channel<CreateNoteEvent>()
     val events = _eventChannel.receiveAsFlow()
 
+    init {
+        if (noteId == null) {
+            initNote(null)
+        } else {
+            loadNote(noteId)
+        }
+    }
     fun onAction(action: CreateNoteAction) {
         when (action) {
             is CreateNoteAction.OnCancelClick -> {
@@ -134,7 +146,7 @@ class CreateNoteViewModel @Inject constructor(
         }
     }
 
-    fun init(noteForChange: NoteUiModel?) {
+    fun initNote(noteForChange: NoteUiModel?) {
         if (noteForChange != null) {
             _state.value = CreateNoteState(
                 title = TextFieldValue(
@@ -154,5 +166,16 @@ class CreateNoteViewModel @Inject constructor(
                 description = ""
             )
         }
+    }
+
+    fun t(){
+        val defaultTitle = context.getString(R.string.title_label)
+        _state.value = CreateNoteState(
+            title = TextFieldValue(
+                text = defaultTitle,
+                selection = TextRange(defaultTitle.length)
+            ),
+            description = ""
+        )
     }
 }

@@ -9,4 +9,14 @@ data class AuthResponse(
     val accessToken: String,
     @SerialName("refreshToken")
     val refreshToken: String,
+    @SerialName("username")
+    val userName: String
+)
+
+@Serializable
+data class AuthRefreshResponse(
+    @SerialName("accessToken")
+    val accessToken: String,
+    @SerialName("refreshToken")
+    val refreshToken: String,
 )

@@ -26,7 +26,6 @@ class AuthApiImpl(
 
         val response: HttpResponse =
             client.post(REGISTER_PATH) {
-                header(X_USER_EMAIL, MOCK_EMAIL)
                 contentType(ContentType.Application.Json)
                 setBody(request)
             }
@@ -45,7 +44,6 @@ class AuthApiImpl(
 
     override suspend fun login(request: LoginRequest): AuthResponse {
         return client.post(BASE_URL + LOGIN_PATH) {
-            header(X_USER_EMAIL, MOCK_EMAIL)
             contentType(ContentType.Application.Json)
             setBody(request)
         }.body()

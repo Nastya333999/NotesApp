@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class NotesResponse(
-    val notes: List<NoteResponse>,
-    val total: Int
+    val notes: List<NoteResponse> = emptyList(),
+    val total: Int = 0
 )
