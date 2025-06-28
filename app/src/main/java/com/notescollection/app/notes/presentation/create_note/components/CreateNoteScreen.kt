@@ -93,7 +93,7 @@ fun CreateNoteContent(
                         onAction(CreateNoteAction.OnCancelClick)
                     }
                 }
-            ) // TODO() lkz landscape add pading
+            )
 
             TextField(
                 value = state.title,

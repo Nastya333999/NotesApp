@@ -18,7 +18,7 @@ fun NotesAppTheme(
 ) {
     val dimensions = when (windowSizeClass) {
         WindowWidthSizeClass.Compact -> CompactDimensions
-        else -> TabletDimensions // TODO: Tablet dimensions
+        else -> TabletDimensions
     }
 
     CompositionLocalProvider(LocalAppDimensions provides dimensions) {

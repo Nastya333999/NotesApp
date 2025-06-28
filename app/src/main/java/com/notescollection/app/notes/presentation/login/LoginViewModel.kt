@@ -1,6 +1,5 @@
 package com.notescollection.app.notes.presentation.login
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.notescollection.app.notes.domain.models.ResultWrapper
@@ -63,13 +62,10 @@ class LoginViewModel @Inject constructor(
 
                     when (val result = authRepository.login(current.email, current.password)) {
                         is ResultWrapper.Success -> {
-                            Log.d("LoginViewModeleeee", "Success ")
                             eventChannel.send(LoginEvent.OnLoginClick)
                         }
 
                         is ResultWrapper.Error -> {
-                            Log.d("LoginViewModeleeee", "ERROR ${result.message}")
-
                             _state.update {
                                 it.copy(
                                     isError = true,

@@ -2,7 +2,6 @@ package com.notescollection.app.notes.presentation.noteList
 
 import android.annotation.SuppressLint
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,10 +33,7 @@ fun NoteListRoot(
     val viewModel: NoteListViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-
     LaunchedEffect(Unit) {
-        Log.d("LoginViewModeleeee", "NoteListRoot LaunchedEffect(Unit) {")
-
         viewModel.getNotes()
     }
     ObserveAsEvents(viewModel.events) { event: NoteListEvent ->

@@ -8,6 +8,6 @@ import com.notescollection.app.notes.data.response.AuthResponse
 
 interface AuthApi {
     suspend fun register(request: RegisterRequest): NetworkResult<Unit>
-    suspend fun login(request: LoginRequest): AuthResponse  // TODO() addNetworkResult
+    suspend fun login(request: LoginRequest): AuthResponse
     suspend fun refreshToken(request: RefreshTokenRequest): AuthResponse
 }

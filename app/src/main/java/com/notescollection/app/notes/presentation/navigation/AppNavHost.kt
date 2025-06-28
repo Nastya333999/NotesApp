@@ -1,7 +1,6 @@
 package com.notescollection.app.notes.presentation.navigation
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -38,7 +37,11 @@ fun AppNavHost(
         composable<Screens.SplashScreen> {
             SplashRoot(
                 onNavigateNext = {
-                    outerNavController.navigate(Screens.LandingScreen)
+                    outerNavController.navigate(Screens.LandingScreen) {
+                        popUpTo(Screens.SplashScreen) {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }
@@ -57,8 +60,6 @@ fun AppNavHost(
         composable<Screens.LoginScreen> {
             LoginRoot(
                 onLoginClick = {
-                    Log.d("LoginViewModeleeee", " composable<Screens.LoginScreen> {  is LoginEvent.OnLoginClick -> {")
-
                     outerNavController.navigate(Screens.NoteListScreen)
                 },
                 onRegisterClick = {

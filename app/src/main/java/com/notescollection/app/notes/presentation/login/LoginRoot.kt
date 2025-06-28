@@ -1,6 +1,5 @@
 package com.notescollection.app.notes.presentation.login
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,8 +34,6 @@ fun LoginRoot(
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             is LoginEvent.OnLoginClick -> {
-                Log.d("LoginViewModeleeee", "  is LoginEvent.OnLoginClick -> {")
-
                 onLoginClick()
             }
 
