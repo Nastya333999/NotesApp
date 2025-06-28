@@ -1,12 +1,17 @@
 package com.notescollection.app.notes.presentation.create_note
 
+import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.notescollection.app.R
 import com.notescollection.app.notes.domain.models.NoteModel
 import com.notescollection.app.notes.domain.models.ResultWrapper
 import com.notescollection.app.notes.domain.repository.NotesRepository
+import com.notescollection.app.notes.presentation.noteList.models.NoteUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,10 +21,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.notescollection.app.notes.presentation.noteList.models.toUiModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 @HiltViewModel
 class CreateNoteViewModel @Inject constructor(
-    private val notesRepository: NotesRepository
+    private val notesRepository: NotesRepository,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(CreateNoteState())
@@ -40,13 +47,14 @@ class CreateNoteViewModel @Inject constructor(
 
             is CreateNoteAction.OnSaveClick -> {
                 val currentState = _state.value
+                val title = currentState.title.text
                 if (currentState.noteForChange == null) {
-                    createNote(currentState.title, currentState.description)
+                    createNote(title, currentState.description)
                 } else {
                     updateNote(
                         noteModel = NoteModel(
                             id = currentState.noteForChange.id,
-                            title = currentState.title,
+                            title = title,
                             content = currentState.description,
                             createdAt = currentState.noteForChange.createdAt,
                             lastEditedAt = currentState.noteForChange.lastEditedAt,
@@ -113,13 +121,38 @@ class CreateNoteViewModel @Inject constructor(
                         _state.update {
                             it.copy(
                                 noteForChange = uiModel,
-                                title = uiModel.title,
+                                title = TextFieldValue(
+                                    text = uiModel.title,
+                                    selection = TextRange(uiModel.title.length)
+                                ),
                                 description = uiModel.description
                             )
                         }
                     }
                 }
             }
+        }
+    }
+
+    fun init(noteForChange: NoteUiModel?) {
+        if (noteForChange != null) {
+            _state.value = CreateNoteState(
+                title = TextFieldValue(
+                    text = noteForChange.title,
+                    selection = TextRange(noteForChange.title.length)
+                ),
+                description = noteForChange.description,
+                noteForChange = noteForChange
+            )
+        } else {
+            val defaultTitle = context.getString(R.string.title_label)
+            _state.value = CreateNoteState(
+                title = TextFieldValue(
+                    text = defaultTitle,
+                    selection = TextRange(defaultTitle.length)
+                ),
+                description = ""
+            )
         }
     }
 }

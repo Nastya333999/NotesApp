@@ -31,7 +31,9 @@ fun CreateNoteRoot(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(noteId) {
-        if (noteId != null) {
+        if (noteId == null) {
+            viewModel.init(null)
+        } else {
             viewModel.loadNote(noteId)
         }
     }
