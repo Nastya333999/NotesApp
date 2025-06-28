@@ -32,7 +32,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val token = tokenStorage.get()
             _state.update {
-                it.copy(startDestination = if (token != null) Screens.NoteListScreen else Screens.LoginScreen)
+                it.copy(startDestination = if (token != null) Screens.NoteListScreen else Screens.SplashScreen)
             }
         }
         observeConnectivity()

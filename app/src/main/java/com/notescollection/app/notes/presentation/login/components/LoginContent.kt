@@ -21,8 +21,9 @@ fun LoginContent(
     onAction: (LoginAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
-
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(
+        modifier = modifier
+    ) {
 
         NotesTextField(
             modifier = Modifier.fillMaxWidth(),
@@ -62,5 +63,7 @@ fun LoginContent(
             modifier = Modifier.fillMaxWidth(),
             isBorderVisible = false,
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }

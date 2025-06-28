@@ -2,9 +2,9 @@ package com.notescollection.app.notes.presentation.registration
 
 data class RegistrationState(
     val userName: String = "",
-    val email: String = "a.dmytriieva.a@gmail.com",
-    val password: String = "123QWEqwe!@#",
-    val repeatPassword: String = "123QWEqwe!@#",
+    val email: String = "",
+    val password: String = "",
+    val repeatPassword: String = "",
 
     val isUserNameError: Boolean = false,
     val isEmailError: Boolean = false,

@@ -24,7 +24,6 @@ import com.notescollection.app.notes.presentation.landing.LandingAction
 fun LandscapeOrientationLandingScreen(
     onAction: (LandingAction) -> Unit,
 ) {
-    val horizontalPadding = LocalAppDimensions.current.screenHorizontalPadding
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -56,7 +55,6 @@ fun LandscapeOrientationLandingScreen(
                     onGetStartedClick = { onAction(LandingAction.GetStartedClick) },
                     onLoginClick = { onAction(LandingAction.LoginClick) },
                     paddingValues = PaddingValues(
-                        vertical = horizontalPadding,
                         horizontal = 32.dp
                     )
                 )

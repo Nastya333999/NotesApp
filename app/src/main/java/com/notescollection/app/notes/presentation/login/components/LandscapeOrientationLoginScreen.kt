@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -59,16 +60,13 @@ fun LandscapeOrientationLoginScreen(
                 subtitle = stringResource(R.string.login_subtitle),
             )
         }
-
-        Column(
-            modifier = Modifier
-                .weight(1.0f)
-                .verticalScroll(rememberScrollState())
-        ) {
             LoginContent(
                 state = state,
                 onAction = onAction,
+                modifier = Modifier
+                    .weight(1.0f)
+                    .verticalScroll(rememberScrollState())
+                    .imePadding()
             )
-        }
     }
 }
