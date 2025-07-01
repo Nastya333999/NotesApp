@@ -174,6 +174,7 @@ fun CreateNoteLandscape(
                             { onAction(CreateNoteAction.OnSaveClick) }
                         }
                     )
+                        .padding(end = 16.dp)
                 )
             }
 
