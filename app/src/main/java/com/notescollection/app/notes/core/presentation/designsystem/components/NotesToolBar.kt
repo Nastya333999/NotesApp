@@ -73,7 +73,6 @@ fun NotesToolBar(
     }
 }
 
-
 @Composable
 fun NotesToolBar(
     onSaveClick: () -> Unit,

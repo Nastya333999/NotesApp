@@ -3,6 +3,7 @@ package com.notescollection.app.notes.presentation.create_note
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.MaterialTheme
@@ -10,7 +11,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -21,6 +21,7 @@ import com.notescollection.app.notes.core.presentation.utils.DeviceConfiguration
 import com.notescollection.app.notes.core.presentation.utils.ObserveAsEvents
 import com.notescollection.app.notes.core.presentation.utils.ScreenSizesPreview
 import com.notescollection.app.notes.presentation.create_note.components.CreateNoteContent
+import com.notescollection.app.notes.presentation.create_note.components.CreateNoteLandscape
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -58,7 +59,8 @@ fun CreateNoteScreen(
         modifier = Modifier
             .fillMaxSize()
             .systemBarsPadding()
-            .background(MaterialTheme.colorScheme.primary),
+            .background(MaterialTheme.colorScheme.primary)
+            .displayCutoutPadding(),
     ) {
         StatusBarStyle()
         val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
@@ -74,7 +76,7 @@ fun CreateNoteScreen(
             }
 
             DeviceConfiguration.MOBILE_LANDSCAPE -> {
-                CreateNoteContent(
+                CreateNoteLandscape(
                     state = state,
                     onAction = onAction,
                     modifier = Modifier
