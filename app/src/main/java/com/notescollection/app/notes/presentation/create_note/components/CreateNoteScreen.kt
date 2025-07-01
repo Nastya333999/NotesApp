@@ -85,7 +85,7 @@ fun CreateNoteContent(
         ) {
             NotesToolBar(
                 modifier = Modifier.fillMaxWidth(),
-                onSaveClick = { onAction(CreateNoteAction.OnSaveClick) },
+                onRightTextClick = { onAction(CreateNoteAction.OnSaveClick) },
                 onCancelClick = {
                     if (state.noteForChange != null) {
                         showDialog = true

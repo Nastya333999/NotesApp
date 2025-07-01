@@ -30,9 +30,11 @@ fun LandscapeOrientationNotesListScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             NotesToolBar(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .windowInsetsPadding(WindowInsets.displayCutout),
                 userFirstLetters = state.userName,
+                onSettingsIconClicked = { onAction(NoteListAction.OnSettingsClick) },
             )
 
             Box(

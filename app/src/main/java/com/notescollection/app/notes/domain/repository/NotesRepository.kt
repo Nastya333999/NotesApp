@@ -13,4 +13,5 @@ interface NotesRepository {
     suspend fun syncUnsyncedNotes() : ResultWrapper<Unit>
 
     fun getPagedNotes(): Flow<PagingData<NoteModel>>
+    suspend fun deleteAllNotes()
 }

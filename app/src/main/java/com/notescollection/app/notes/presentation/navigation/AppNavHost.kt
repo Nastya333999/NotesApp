@@ -16,6 +16,7 @@ import com.notescollection.app.notes.presentation.landing.LandingRoot
 import com.notescollection.app.notes.presentation.login.LoginRoot
 import com.notescollection.app.notes.presentation.noteList.NoteListRoot
 import com.notescollection.app.notes.presentation.registration.RegistrationRoot
+import com.notescollection.app.notes.presentation.settings.SettingsRoot
 import com.notescollection.app.notes.presentation.splash.SplashRoot
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -83,6 +84,9 @@ fun AppNavHost(
                 },
                 onNoteDetailsClick = { noteId ->
                     outerNavController.navigate(Screens.CreateNoteScreen.route(noteId))
+                },
+                navigateToSettings = {
+                    outerNavController.navigate(Screens.SettingsScreen)
                 }
             )
         }
@@ -97,7 +101,6 @@ fun AppNavHost(
                 }
             )
         ) { backStackEntry ->
-            val noteId = backStackEntry.arguments?.getString(Screens.CreateNoteScreen.noteIdArg)
             CreateNoteRoot(
                 navigateBack = { outerNavController.popBackStack() }
             )
@@ -106,6 +109,13 @@ fun AppNavHost(
         composable(Screens.CreateNoteScreen.routeBase) {
             CreateNoteRoot(
                 navigateBack = { outerNavController.popBackStack() }
+            )
+        }
+
+        composable<Screens.SettingsScreen> {
+            SettingsRoot(
+                navigateBack = { outerNavController.popBackStack() },
+                logOut = { outerNavController.navigate(Screens.LandingScreen) }
             )
         }
     }

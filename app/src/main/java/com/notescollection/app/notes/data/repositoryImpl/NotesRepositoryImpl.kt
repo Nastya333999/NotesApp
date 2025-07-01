@@ -149,4 +149,8 @@ class NotesRepositoryImpl @Inject constructor(
     } catch (e: Exception) {
         ResultWrapper.Error(e.localizedMessage ?: "Unknown error", e)
     }
+
+    override suspend fun deleteAllNotes() {
+        notesLocalDataSource.clearAll()
+    }
 }

@@ -45,4 +45,8 @@ class NotesLocalDataSourceImpl @Inject constructor(
     override suspend fun getUnsyncedNotes(): List<NoteModel> {
         return notesDao.getUnsyncedNotes().map { it.toModel() }
     }
+
+    override suspend fun clearAll() {
+        notesDao.clearAll()
+    }
 }

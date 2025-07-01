@@ -10,4 +10,5 @@ interface AuthApi {
     suspend fun register(request: RegisterRequest): NetworkResult<Unit>
     suspend fun login(request: LoginRequest): AuthResponse
     suspend fun refreshToken(request: RefreshTokenRequest): AuthResponse
+    suspend fun logOut(refreshToken: String): NetworkResult<Unit>
 }

@@ -103,6 +103,12 @@ class NoteListViewModel @Inject constructor(
                     eventChannel.send(NoteListEvent.OnNoteCLick(action.note))
                 }
             }
+
+            is NoteListAction.OnSettingsClick -> {
+                viewModelScope.launch {
+                    eventChannel.send(NoteListEvent.OnSettingsEvent)
+                }
+            }
         }
     }
 }

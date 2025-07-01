@@ -28,7 +28,8 @@ import com.notescollection.app.notes.presentation.noteList.components.PortraitNo
 @Composable
 fun NoteListRoot(
     navigateToCreateNote: () -> Unit,
-    onNoteDetailsClick: (String) -> Unit
+    onNoteDetailsClick: (String) -> Unit,
+    navigateToSettings: () -> Unit,
 ) {
     val viewModel: NoteListViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -44,6 +45,10 @@ fun NoteListRoot(
 
             is NoteListEvent.OnNoteCLick -> {
                 onNoteDetailsClick(event.note.id)
+            }
+
+            is NoteListEvent.OnSettingsEvent -> {
+                navigateToSettings()
             }
         }
     }

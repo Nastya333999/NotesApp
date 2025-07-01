@@ -29,4 +29,7 @@ sealed interface Screens {
                 if (noteId != null) "$routeBase/$noteId" else routeBase
         }
     }
+
+    @Serializable
+    data object SettingsScreen : Screens
 }

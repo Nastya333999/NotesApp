@@ -19,6 +19,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -27,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.dropUnlessResumed
 import com.notescollection.app.R
+import com.notescollection.app.notes.core.presentation.designsystem.components.icons.Settings
 import com.notescollection.app.notes.core.presentation.designsystem.theme.Grotesk
 import com.notescollection.app.notes.core.presentation.designsystem.theme.NotesAppTheme
 
@@ -34,6 +37,7 @@ import com.notescollection.app.notes.core.presentation.designsystem.theme.NotesA
 fun NotesToolBar(
     userFirstLetters: String = "PL",
     modifier: Modifier = Modifier,
+    onSettingsIconClicked: () -> Unit,
 ) {
     Row(
         modifier = modifier
@@ -41,7 +45,8 @@ fun NotesToolBar(
             .padding(
                 horizontal = 26.dp,
                 vertical = 20.dp
-            )
+            ),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = stringResource(R.string.notes_title),
@@ -51,6 +56,14 @@ fun NotesToolBar(
 
         Spacer(modifier = Modifier.weight(1f))
 
+        IconButton(onClick = dropUnlessResumed { onSettingsIconClicked() }) {
+            Icon(
+                imageVector = Settings,
+                contentDescription = "Clear",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(24.dp)
+            )
+        }
         Box(
             modifier = Modifier
                 .size(40.dp)
@@ -75,9 +88,14 @@ fun NotesToolBar(
 
 @Composable
 fun NotesToolBar(
-    onSaveClick: () -> Unit,
+    onRightTextClick: () -> Unit = {},
     onCancelClick: () -> Unit,
     modifier: Modifier = Modifier,
+    leftIcon: ImageVector = Icons.Default.Clear,
+    rightTextPositioned: Int? = R.string.save_note_text,
+    rightTextColor: Color = MaterialTheme.colorScheme.primary,
+    leftTextPositioned: Int? = null,
+    leftTextColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
 ) {
     Row(
         modifier = modifier
@@ -92,28 +110,43 @@ fun NotesToolBar(
     ) {
         IconButton(onClick = onCancelClick) {
             Icon(
-                imageVector = Icons.Default.Clear,
+                imageVector = leftIcon,
                 contentDescription = "Cancel",
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 
+        leftTextPositioned?.let {
+            Text(
+                text = stringResource(leftTextPositioned).uppercase(),
+                style = TextStyle(
+                    fontFamily = Grotesk,
+                    fontWeight = FontWeight(700),
+                    fontSize = 17.sp
+                ),
+                color = leftTextColor,
+                modifier = Modifier
+            )
+        }
+
         Spacer(modifier = Modifier.weight(1f))
 
-        Text(
-            text = stringResource(R.string.save_note_text).uppercase(),
-            style = TextStyle(
-                fontFamily = Grotesk,
-                fontWeight = FontWeight(700),
-                fontSize = 17.sp
-            ),
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.clickable(
-                onClick = dropUnlessResumed {
-                    onSaveClick()
-                }
+        rightTextPositioned?.let {
+            Text(
+                text = stringResource(rightTextPositioned).uppercase(),
+                style = TextStyle(
+                    fontFamily = Grotesk,
+                    fontWeight = FontWeight(700),
+                    fontSize = 17.sp
+                ),
+                color = rightTextColor,
+                modifier = Modifier.clickable(
+                    onClick = dropUnlessResumed {
+                        onRightTextClick()
+                    }
+                )
             )
-        )
+        }
     }
 }
 
@@ -123,15 +156,17 @@ private fun NotesToolBarPreview() {
     NotesAppTheme {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(),
         ) {
-            NotesToolBar()
+            NotesToolBar(
+                onSettingsIconClicked = {},
+            )
 
             HorizontalDivider()
 
             NotesToolBar(
-                onSaveClick = {},
-                onCancelClick = {}
+                onRightTextClick = {},
+                onCancelClick = {},
             )
         }
     }

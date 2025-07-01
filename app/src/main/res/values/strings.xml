@@ -56,4 +56,8 @@
     <string name="discard_changes_message">You have unsaved changes. If you discard now, all changes will be lost.</string>
     <string name="keep_editing">Keep Editing</string>
     <string name="discard">Discard</string>
+
+    // Settings
+    <string name="settings_title">Settings</string>
+    <string name="log_out_items">Log out</string>
 </resources>

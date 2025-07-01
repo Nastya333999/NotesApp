@@ -6,4 +6,5 @@ sealed interface NoteListAction {
     data object OnNewNoteCreate : NoteListAction
     data class OnDeleteNote(val note: NoteUiModel) : NoteListAction
     data class OnNoteClick(val note: NoteUiModel) : NoteListAction
+    data object OnSettingsClick : NoteListAction
 }

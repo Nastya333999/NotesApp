@@ -94,4 +94,5 @@ dependencies {
     implementation(libs.androidx.paging.compose)
 
     implementation (libs.accompanist.systemuicontroller)
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
 }

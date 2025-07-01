@@ -13,4 +13,5 @@ interface NotesLocalDataSource {
     suspend fun getNotesPaginated(limit: Int, offset: Int): List<NoteModel>
     fun getPagingSource(): PagingSource<Int, NoteEntity>
     suspend fun getUnsyncedNotes(): List<NoteModel>
+    suspend fun clearAll()
 }

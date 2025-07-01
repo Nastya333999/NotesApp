@@ -27,6 +27,7 @@ fun PortraitNoteListScreen(
             NotesToolBar(
                 modifier = Modifier.fillMaxWidth(),
                 userFirstLetters = state.userName,
+                onSettingsIconClicked = { onAction(NoteListAction.OnSettingsClick) },
             )
 
             Box(

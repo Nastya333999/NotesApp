@@ -16,6 +16,16 @@ class AuthRepositoryImpl @Inject constructor(
     private val tokenStorage: TokenStorage
 ) : AuthRepository {
 
+    override suspend fun logOut(): ResultWrapper<Unit> {
+        return try {
+            authApi.logOut(tokenStorage.get()!!.refreshToken)
+            tokenStorage.saveTokens("", "")
+            ResultWrapper.Success(Unit)
+        } catch (e: Exception) {
+            ResultWrapper.Error(e.localizedMessage ?: "Unknown error", e)
+        }
+    }
+
     override suspend fun login(email: String, password: String): ResultWrapper<AuthResponseModel> {
         return try {
             val response = authApi.login(LoginRequest(email, password))
