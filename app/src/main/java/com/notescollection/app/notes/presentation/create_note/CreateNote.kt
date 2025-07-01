@@ -59,7 +59,7 @@ fun CreateNoteScreen(
         modifier = Modifier
             .fillMaxSize()
             .systemBarsPadding()
-            .background(MaterialTheme.colorScheme.primary)
+            .background(MaterialTheme.colorScheme.surface)
             .displayCutoutPadding(),
     ) {
         StatusBarStyle()

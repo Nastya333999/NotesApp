@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.displayCutoutPadding
@@ -18,7 +19,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -47,7 +47,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.dropUnlessResumed
@@ -74,7 +73,8 @@ fun CreateNoteLandscape(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .displayCutoutPadding()
+            .background(color = MaterialTheme.colorScheme.surface)
+
     ) {
         var showDialog by remember { mutableStateOf(false) }
 
@@ -169,11 +169,12 @@ fun CreateNoteLandscape(
                         fontSize = 17.sp
                     ),
                     color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.clickable(
-                        onClick = dropUnlessResumed {
-                            { onAction(CreateNoteAction.OnSaveClick) }
-                        }
-                    )
+                    modifier = Modifier
+                        .clickable(
+                            onClick = dropUnlessResumed {
+                                { onAction(CreateNoteAction.OnSaveClick) }
+                            }
+                        )
                         .padding(end = 16.dp)
                 )
             }
@@ -191,9 +192,7 @@ fun CreateNoteLandscape(
                 TextField(
                     value = state.description,
                     onValueChange = { onAction(CreateNoteAction.OnDescriptionChange(it)) },
-                    modifier = Modifier
-                        .defaultMinSize(minWidth = 540.dp)
-                        .windowInsetsPadding(WindowInsets.displayCutout),
+                    modifier = Modifier.defaultMinSize(minWidth = 540.dp),
                     placeholder = {
                         Row(horizontalArrangement = Arrangement.Start) {
                             Text(
