@@ -32,7 +32,7 @@ class CreateNoteViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    val noteId: String? = savedStateHandle["noteId"]
+    val noteId: String? = savedStateHandle[NODE_ID]
 
     private val _state = MutableStateFlow(CreateNoteState())
     val state: StateFlow<CreateNoteState> = _state
@@ -42,11 +42,12 @@ class CreateNoteViewModel @Inject constructor(
 
     init {
         if (noteId == null) {
-            initNote(null)
+            initNote()
         } else {
             loadNote(noteId)
         }
     }
+
     fun onAction(action: CreateNoteAction) {
         when (action) {
             is CreateNoteAction.OnCancelClick -> {
@@ -93,6 +94,16 @@ class CreateNoteViewModel @Inject constructor(
                     _eventChannel.send(CreateNoteEvent.OnCancelClick)
                 }
             }
+
+            is CreateNoteAction.OnModeChange -> {
+                viewModelScope.launch {
+                    _state.update { state ->
+                        state.copy(
+                            noteMode = action.mode
+                        )
+                    }
+                }
+            }
         }
     }
 
@@ -135,9 +146,9 @@ class CreateNoteViewModel @Inject constructor(
                                 noteForChange = uiModel,
                                 title = TextFieldValue(
                                     text = uiModel.title,
-                                    selection = TextRange(uiModel.title.length)
+                                    selection = TextRange(uiModel.title.length),
                                 ),
-                                description = uiModel.description
+                                description = uiModel.description,
                             )
                         }
                     }
@@ -146,36 +157,19 @@ class CreateNoteViewModel @Inject constructor(
         }
     }
 
-    fun initNote(noteForChange: NoteUiModel?) {
-        if (noteForChange != null) {
-            _state.value = CreateNoteState(
-                title = TextFieldValue(
-                    text = noteForChange.title,
-                    selection = TextRange(noteForChange.title.length)
-                ),
-                description = noteForChange.description,
-                noteForChange = noteForChange
-            )
-        } else {
-            val defaultTitle = context.getString(R.string.title_label)
-            _state.value = CreateNoteState(
-                title = TextFieldValue(
-                    text = defaultTitle,
-                    selection = TextRange(defaultTitle.length)
-                ),
-                description = ""
-            )
-        }
-    }
-
-    fun t(){
+    fun initNote() {
         val defaultTitle = context.getString(R.string.title_label)
         _state.value = CreateNoteState(
             title = TextFieldValue(
                 text = defaultTitle,
                 selection = TextRange(defaultTitle.length)
             ),
-            description = ""
+            description = "",
+            noteMode = NotesMode.EDIT
         )
+    }
+
+    companion object {
+        private const val NODE_ID = "noteId"
     }
 }

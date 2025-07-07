@@ -8,7 +8,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 
 private val LightColorScheme = lightColorScheme(
     primary = Primary,
-    onError = Error
+    onError = Error,
 )
 
 @Composable

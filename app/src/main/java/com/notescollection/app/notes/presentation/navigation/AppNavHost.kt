@@ -92,7 +92,7 @@ fun AppNavHost(
         }
 
         composable(
-            route = "${Screens.CreateNoteScreen.routeBase}/{${Screens.CreateNoteScreen.noteIdArg}}",
+            route = "${Screens.CreateNoteScreen.routeBase}?${Screens.CreateNoteScreen.noteIdArg}={${Screens.CreateNoteScreen.noteIdArg}}",
             arguments = listOf(
                 navArgument(Screens.CreateNoteScreen.noteIdArg) {
                     type = NavType.StringType
@@ -100,13 +100,7 @@ fun AppNavHost(
                     defaultValue = null
                 }
             )
-        ) { backStackEntry ->
-            CreateNoteRoot(
-                navigateBack = { outerNavController.popBackStack() }
-            )
-        }
-
-        composable(Screens.CreateNoteScreen.routeBase) {
+        ) {
             CreateNoteRoot(
                 navigateBack = { outerNavController.popBackStack() }
             )

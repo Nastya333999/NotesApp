@@ -26,7 +26,7 @@ sealed interface Screens {
             const val noteIdArg = "noteId"
 
             fun route(noteId: String? = null): String =
-                if (noteId != null) "$routeBase/$noteId" else routeBase
+                if (noteId != null) "$routeBase?$noteIdArg=$noteId" else routeBase
         }
     }
 

@@ -57,6 +57,7 @@ import com.notescollection.app.notes.core.presentation.utils.ScreenSizesPreview
 import com.notescollection.app.notes.presentation.create_note.CreateNoteAction
 import com.notescollection.app.notes.presentation.create_note.CreateNoteScreen
 import com.notescollection.app.notes.presentation.create_note.CreateNoteState
+import com.notescollection.app.notes.presentation.create_note.NotesMode
 
 @Composable
 fun CreateNoteLandscape(
@@ -184,6 +185,19 @@ fun CreateNoteLandscape(
                     .widthIn(max = 540.dp)
                     .background(color = MaterialTheme.colorScheme.onSurface)
             )
+
+            if (state.noteMode == NotesMode.READ) {
+                NoteMetadata(
+                    dateCreated = state.noteForChange?.createdAt ?: "",
+                    lastModified = state.noteForChange?.lastEditedAt ?: "",
+                    modifier = Modifier.widthIn(max = 540.dp)
+                )
+
+                HorizontalDivider(modifier = Modifier
+                    .widthIn(max = 540.dp)
+                    .background(color = MaterialTheme.colorScheme.onSurface))
+            }
+
             Box(
                 modifier = Modifier
                     .widthIn(max = 540.dp)
@@ -214,8 +228,16 @@ fun CreateNoteLandscape(
                     textStyle = MaterialTheme.typography.bodyLarge,
                 )
             }
-
         }
+
+        NoteStateFAB(
+            modifier = Modifier
+                .padding(bottom = 16.dp)
+                .align(Alignment.BottomCenter),
+            mode = state.noteMode,
+            onEditIconClicked = { onAction(CreateNoteAction.OnModeChange(NotesMode.EDIT)) },
+            onReadIconClicked = { onAction(CreateNoteAction.OnModeChange(NotesMode.READ)) }
+        )
     }
 }
 
