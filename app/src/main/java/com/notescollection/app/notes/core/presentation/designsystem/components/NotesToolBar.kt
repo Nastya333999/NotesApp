@@ -167,6 +167,7 @@ private fun NotesToolBarPreview() {
             NotesToolBar(
                 onRightTextClick = {},
                 onCancelClick = {},
+                leftTextPositioned = R.string.settings_title
             )
         }
     }

@@ -62,13 +62,13 @@ class CreateNoteViewModel @Inject constructor(
                 val currentState = _state.value
                 val title = currentState.title.text
                 if (currentState.noteForChange == null) {
-                    createNote(title, currentState.description)
+                    createNote(title, currentState.description.text)
                 } else {
                     updateNote(
                         noteModel = NoteModel(
                             id = currentState.noteForChange.id,
                             title = title,
-                            content = currentState.description,
+                            content = currentState.description.text,
                             createdAt = currentState.noteForChange.createdAt,
                             lastEditedAt = currentState.noteForChange.lastEditedAt,
                             isSyn = false
@@ -148,7 +148,10 @@ class CreateNoteViewModel @Inject constructor(
                                     text = uiModel.title,
                                     selection = TextRange(uiModel.title.length),
                                 ),
-                                description = uiModel.description,
+                                description = TextFieldValue(
+                                    text = uiModel.description,
+                                    selection = TextRange(uiModel.description.length),
+                                )
                             )
                         }
                     }
@@ -164,8 +167,11 @@ class CreateNoteViewModel @Inject constructor(
                 text = defaultTitle,
                 selection = TextRange(defaultTitle.length)
             ),
-            description = "",
-            noteMode = NotesMode.EDIT
+            description = TextFieldValue(
+                text = "",
+                selection = TextRange(defaultTitle.length)
+            ),
+            noteMode = NotesMode.CREATE
         )
     }
 

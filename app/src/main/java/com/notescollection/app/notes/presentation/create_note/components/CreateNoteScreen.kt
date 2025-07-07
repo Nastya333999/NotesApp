@@ -1,8 +1,10 @@
 package com.notescollection.app.notes.presentation.create_note.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,11 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -31,6 +31,8 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.notescollection.app.R
 import com.notescollection.app.notes.core.presentation.designsystem.components.NotesToolBar
@@ -39,7 +41,7 @@ import com.notescollection.app.notes.presentation.create_note.CreateNoteState
 import com.notescollection.app.notes.presentation.create_note.NotesMode
 
 @Composable
-fun CreateNoteContent(
+fun CreateNotePortrait(
     state: CreateNoteState,
     onAction: (CreateNoteAction) -> Unit,
     modifier: Modifier
@@ -54,27 +56,11 @@ fun CreateNoteContent(
         var showDialog by remember { mutableStateOf(false) }
 
         if (showDialog) {
-            AlertDialog(
-                onDismissRequest = { showDialog = false },
-                title = { Text(stringResource(id = R.string.discard_changes_title)) },
-                text = { Text(stringResource(id = R.string.discard_changes_message)) },
-                confirmButton = {
-                    TextButton(onClick = {
-                        showDialog = false
-                    }) {
-                        Text(stringResource(id = R.string.keep_editing))
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = {
-                        showDialog = false
-                        onAction(CreateNoteAction.NavigateBack)
-                    }) {
-                        Text(
-                            stringResource(id = R.string.discard),
-                            color = MaterialTheme.colorScheme.error
-                        )
-                    }
+            DiscardChangesDialog(
+                onDismiss = { showDialog = false },
+                onDiscardConfirmed = {
+                    showDialog = false
+                    onAction(CreateNoteAction.NavigateBack)
                 }
             )
         }
@@ -97,77 +83,64 @@ fun CreateNoteContent(
                     } else {
                         onAction(CreateNoteAction.OnCancelClick)
                     }
-                }
+                },
+                leftTextPositioned = if (state.noteMode != NotesMode.CREATE) R.string.tool_bar_back_text else null
             )
 
-            TextField(
-                value = state.title,
-                onValueChange = { onAction(CreateNoteAction.OnTitleChange(it)) },
+            NoteTitleField(
+                title = state.title,
+                onTitleChange = { onAction(CreateNoteAction.OnTitleChange(it)) },
+                focusRequester = focusRequester,
+                readOnly = state.noteMode == NotesMode.READ,
                 modifier = Modifier
                     .fillMaxWidth()
                     .focusRequester(focusRequester)
                     .windowInsetsPadding(WindowInsets.displayCutout),
-                placeholder = {
+                placeHolder = {
                     Text(
                         text = stringResource(R.string.title_label),
                         style = MaterialTheme.typography.titleLarge,
                     )
-                },
-                maxLines = 1,
-                colors = TextFieldDefaults.colors().copy(
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface
-                ),
-                textStyle = MaterialTheme.typography.titleLarge,
+                }
             )
 
             HorizontalDivider(modifier = Modifier.background(color = MaterialTheme.colorScheme.onSurface))
 
             if (state.noteMode == NotesMode.READ) {
                 NoteMetadata(
-                   dateCreated = state.noteForChange?.createdAt ?: "",
+                    dateCreated = state.noteForChange?.createdAt ?: "",
                     lastModified = state.noteForChange?.lastEditedAt ?: "",
                 )
                 HorizontalDivider(modifier = Modifier.background(color = MaterialTheme.colorScheme.onSurface))
             }
 
-            TextField(
-                value = state.description,
-                onValueChange = { onAction(CreateNoteAction.OnDescriptionChange(it)) },
+            NoteTitleField(
+                title = state.description,
+                onTitleChange = { onAction(CreateNoteAction.OnDescriptionChange(it)) },
+                focusRequester = focusRequester,
+                readOnly = state.noteMode == NotesMode.READ,
                 modifier = Modifier
-                    .windowInsetsPadding(WindowInsets.displayCutout)
-                    .fillMaxSize(),
-                placeholder = {
+                    .fillMaxWidth()
+                    .windowInsetsPadding(WindowInsets.displayCutout),
+                textStyle = MaterialTheme.typography.bodyLarge,
+                placeHolder = {
                     Text(
                         text = stringResource(R.string.description_label),
                         style = MaterialTheme.typography.bodyLarge,
                     )
-                },
-                colors = TextFieldDefaults.colors().copy(
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface
-                ),
-                textStyle = MaterialTheme.typography.bodyLarge,
+                }
             )
         }
 
-        NoteStateFAB(
-            modifier = Modifier
-                .padding(bottom = 16.dp)
-                .align(Alignment.BottomCenter),
-            mode = state.noteMode,
-            onEditIconClicked = { onAction(CreateNoteAction.OnModeChange(NotesMode.EDIT)) },
-            onReadIconClicked = { onAction(CreateNoteAction.OnModeChange(NotesMode.READ)) }
-        )
+        if (state.noteMode != NotesMode.CREATE) {
+            NoteStateFAB(
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
+                    .align(Alignment.BottomCenter),
+                mode = state.noteMode,
+                onEditIconClicked = { onAction(CreateNoteAction.OnModeChange(NotesMode.EDIT)) },
+                onReadIconClicked = { onAction(CreateNoteAction.OnModeChange(NotesMode.READ)) }
+            )
+        }
     }
 }

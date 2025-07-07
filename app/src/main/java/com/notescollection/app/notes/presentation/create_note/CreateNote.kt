@@ -1,5 +1,7 @@
 package com.notescollection.app.notes.presentation.create_note
 
+import android.app.Activity
+import android.content.pm.ActivityInfo
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -11,8 +13,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.notescollection.app.notes.core.presentation.designsystem.components.StatusBarStyle
@@ -20,7 +24,7 @@ import com.notescollection.app.notes.core.presentation.designsystem.theme.NotesA
 import com.notescollection.app.notes.core.presentation.utils.DeviceConfiguration
 import com.notescollection.app.notes.core.presentation.utils.ObserveAsEvents
 import com.notescollection.app.notes.core.presentation.utils.ScreenSizesPreview
-import com.notescollection.app.notes.presentation.create_note.components.CreateNoteContent
+import com.notescollection.app.notes.presentation.create_note.components.CreateNotePortrait
 import com.notescollection.app.notes.presentation.create_note.components.CreateNoteLandscape
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -55,6 +59,17 @@ fun CreateNoteScreen(
     state: CreateNoteState,
     onAction: (CreateNoteAction) -> Unit,
 ) {
+    val context = LocalContext.current
+    val activity = context as? Activity
+
+    LaunchedEffect(state.noteMode) {
+        if (state.noteMode == NotesMode.READ) {
+            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        } else {
+            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
+    }
+
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -68,7 +83,7 @@ fun CreateNoteScreen(
 
         when (deviceConfiguration) {
             DeviceConfiguration.MOBILE_PORTRAIT -> {
-                CreateNoteContent(
+                CreateNotePortrait(
                     state = state,
                     onAction = onAction,
                     modifier = Modifier
@@ -86,7 +101,7 @@ fun CreateNoteScreen(
             DeviceConfiguration.TABLET_PORTRAIT,
             DeviceConfiguration.TABLET_LANDSCAPE,
             DeviceConfiguration.DESKTOP -> {
-                CreateNoteContent(
+                CreateNotePortrait(
                     state = state,
                     onAction = onAction,
                     modifier = Modifier

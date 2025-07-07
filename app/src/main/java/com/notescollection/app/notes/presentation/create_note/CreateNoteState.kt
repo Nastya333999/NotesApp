@@ -5,9 +5,9 @@ import com.notescollection.app.notes.presentation.noteList.models.NoteUiModel
 
 data class CreateNoteState(
     val title: TextFieldValue = TextFieldValue(""),
-    val description: String = "",
+    val description: TextFieldValue = TextFieldValue(""),
     val noteForChange: NoteUiModel? = null,
     val noteMode: NotesMode = NotesMode.READ
 )
 
-enum class NotesMode { EDIT, READ }
+enum class NotesMode { EDIT, READ, CREATE }

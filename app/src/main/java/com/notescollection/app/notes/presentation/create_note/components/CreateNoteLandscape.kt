@@ -9,29 +9,24 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.displayCutout
-import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -42,10 +37,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -80,27 +75,11 @@ fun CreateNoteLandscape(
         var showDialog by remember { mutableStateOf(false) }
 
         if (showDialog) {
-            AlertDialog(
-                onDismissRequest = { showDialog = false },
-                title = { Text(stringResource(id = R.string.discard_changes_title)) },
-                text = { Text(stringResource(id = R.string.discard_changes_message)) },
-                confirmButton = {
-                    TextButton(onClick = {
-                        showDialog = false
-                    }) {
-                        Text(stringResource(id = R.string.keep_editing))
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = {
-                        showDialog = false
-                        onAction(CreateNoteAction.NavigateBack)
-                    }) {
-                        Text(
-                            stringResource(id = R.string.discard),
-                            color = MaterialTheme.colorScheme.error
-                        )
-                    }
+            DiscardChangesDialog(
+                onDismiss = { showDialog = false },
+                onDiscardConfirmed = {
+                    showDialog = false
+                    onAction(CreateNoteAction.NavigateBack)
                 }
             )
         }
@@ -132,32 +111,37 @@ fun CreateNoteLandscape(
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
+
+                if (state.noteMode != NotesMode.CREATE) {
+                    Text(
+                        text = stringResource(R.string.tool_bar_back_text).uppercase(),
+                        style = TextStyle(
+                            fontFamily = Grotesk,
+                            fontWeight = FontWeight(700),
+                            fontSize = 17.sp
+                        ),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier
+                    )
+                }
+
                 Spacer(modifier = Modifier.weight(1f))
 
-                TextField(
-                    value = state.title,
-                    onValueChange = { onAction(CreateNoteAction.OnTitleChange(it)) },
+                NoteTitleField(
+                    title = state.title,
+                    onTitleChange = { onAction(CreateNoteAction.OnTitleChange(it)) },
+                    focusRequester = focusRequester,
+                    readOnly = state.noteMode == NotesMode.READ,
                     modifier = Modifier
                         .defaultMinSize(minWidth = 540.dp)
-                        .padding(horizontal = 16.dp)
-                        .focusRequester(focusRequester),
-                    placeholder = {
+                        .focusRequester(focusRequester)
+                        .padding(horizontal = 16.dp),
+                    placeHolder = {
                         Text(
                             text = stringResource(R.string.title_label),
                             style = MaterialTheme.typography.titleLarge,
                         )
-                    },
-                    maxLines = 1,
-                    colors = TextFieldDefaults.colors().copy(
-                        focusedContainerColor = MaterialTheme.colorScheme.surface,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface
-                    ),
-                    textStyle = MaterialTheme.typography.titleLarge,
+                    }
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
@@ -172,9 +156,7 @@ fun CreateNoteLandscape(
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .clickable(
-                            onClick = dropUnlessResumed {
-                                { onAction(CreateNoteAction.OnSaveClick) }
-                            }
+                            onClick = dropUnlessResumed { { onAction(CreateNoteAction.OnSaveClick) } }
                         )
                         .padding(end = 16.dp)
                 )
@@ -193,9 +175,11 @@ fun CreateNoteLandscape(
                     modifier = Modifier.widthIn(max = 540.dp)
                 )
 
-                HorizontalDivider(modifier = Modifier
-                    .widthIn(max = 540.dp)
-                    .background(color = MaterialTheme.colorScheme.onSurface))
+                HorizontalDivider(
+                    modifier = Modifier
+                        .widthIn(max = 540.dp)
+                        .background(color = MaterialTheme.colorScheme.onSurface)
+                )
             }
 
             Box(
@@ -203,11 +187,14 @@ fun CreateNoteLandscape(
                     .widthIn(max = 540.dp)
                     .weight(1f)
             ) {
-                TextField(
-                    value = state.description,
-                    onValueChange = { onAction(CreateNoteAction.OnDescriptionChange(it)) },
+                NoteTitleField(
+                    title = state.description,
+                    onTitleChange = { onAction(CreateNoteAction.OnDescriptionChange(it)) },
+                    focusRequester = focusRequester,
+                    readOnly = state.noteMode == NotesMode.READ,
                     modifier = Modifier.defaultMinSize(minWidth = 540.dp),
-                    placeholder = {
+                    textStyle = MaterialTheme.typography.bodyLarge,
+                    placeHolder = {
                         Row(horizontalArrangement = Arrangement.Start) {
                             Text(
                                 text = stringResource(R.string.description_label),
@@ -215,29 +202,21 @@ fun CreateNoteLandscape(
                                 textAlign = TextAlign.Start
                             )
                         }
-                    },
-                    colors = TextFieldDefaults.colors().copy(
-                        focusedContainerColor = MaterialTheme.colorScheme.surface,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface
-                    ),
-                    textStyle = MaterialTheme.typography.bodyLarge,
+                    }
                 )
             }
         }
 
-        NoteStateFAB(
-            modifier = Modifier
-                .padding(bottom = 16.dp)
-                .align(Alignment.BottomCenter),
-            mode = state.noteMode,
-            onEditIconClicked = { onAction(CreateNoteAction.OnModeChange(NotesMode.EDIT)) },
-            onReadIconClicked = { onAction(CreateNoteAction.OnModeChange(NotesMode.READ)) }
-        )
+        if (state.noteMode != NotesMode.CREATE) {
+            NoteStateFAB(
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
+                    .align(Alignment.BottomCenter),
+                mode = state.noteMode,
+                onEditIconClicked = { onAction(CreateNoteAction.OnModeChange(NotesMode.EDIT)) },
+                onReadIconClicked = { onAction(CreateNoteAction.OnModeChange(NotesMode.READ)) }
+            )
+        }
     }
 }
 
