@@ -12,7 +12,6 @@ import com.notescollection.app.R
 import com.notescollection.app.notes.domain.models.NoteModel
 import com.notescollection.app.notes.domain.models.ResultWrapper
 import com.notescollection.app.notes.domain.repository.NotesRepository
-import com.notescollection.app.notes.presentation.noteList.models.NoteUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow

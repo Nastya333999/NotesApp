@@ -8,16 +8,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -57,20 +54,24 @@ import com.notescollection.app.notes.presentation.create_note.NotesMode
 @Composable
 fun CreateNoteLandscape(
     state: CreateNoteState,
+    chromeVisible: Boolean,
     onAction: (CreateNoteAction) -> Unit,
+    hideChrome: () -> Unit,
     modifier: Modifier
 ) {
     val focusRequester = remember { FocusRequester() }
+    val scrollState = rememberScrollState()
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.surface)
+    LaunchedEffect(scrollState.isScrollInProgress) {
+        if (scrollState.isScrollInProgress && chromeVisible) hideChrome()
+    }
 
+    Box(
+        modifier = Modifier.fillMaxSize()
     ) {
         var showDialog by remember { mutableStateOf(false) }
 
@@ -87,42 +88,46 @@ fun CreateNoteLandscape(
             modifier = modifier
                 .fillMaxSize()
                 .background(color = MaterialTheme.colorScheme.surface)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
                 .imePadding(),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(IntrinsicSize.Min),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = dropUnlessResumed {
-                    if (state.noteForChange != null) {
-                        showDialog = true
-                    } else {
-                        onAction(CreateNoteAction.OnCancelClick)
-                    }
-                }) {
-                    Icon(
-                        imageVector = Icons.Default.Clear,
-                        contentDescription = "Cancel",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
+                FadeVisibility(visible = chromeVisible) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        IconButton(onClick = dropUnlessResumed {
+                            if (state.noteForChange != null) {
+                                showDialog = true
+                            } else {
+                                onAction(CreateNoteAction.OnCancelClick)
+                            }
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.Clear,
+                                contentDescription = "Cancel",
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
 
-                if (state.noteMode != NotesMode.CREATE) {
-                    Text(
-                        text = stringResource(R.string.tool_bar_back_text).uppercase(),
-                        style = TextStyle(
-                            fontFamily = Grotesk,
-                            fontWeight = FontWeight(700),
-                            fontSize = 17.sp
-                        ),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier
-                    )
+                        if (state.noteMode != NotesMode.CREATE) {
+                            Text(
+                                text = stringResource(R.string.tool_bar_back_text).uppercase(),
+                                style = TextStyle(
+                                    fontFamily = Grotesk,
+                                    fontWeight = FontWeight(700),
+                                    fontSize = 17.sp
+                                ),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
                 }
 
                 Spacer(modifier = Modifier.weight(1f))
@@ -141,7 +146,8 @@ fun CreateNoteLandscape(
                             text = stringResource(R.string.title_label),
                             style = MaterialTheme.typography.titleLarge,
                         )
-                    }
+                    },
+                    maxLines = 1,
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
@@ -205,17 +211,6 @@ fun CreateNoteLandscape(
                     }
                 )
             }
-        }
-
-        if (state.noteMode != NotesMode.CREATE) {
-            NoteStateFAB(
-                modifier = Modifier
-                    .padding(bottom = 16.dp)
-                    .align(Alignment.BottomCenter),
-                mode = state.noteMode,
-                onEditIconClicked = { onAction(CreateNoteAction.OnModeChange(NotesMode.EDIT)) },
-                onReadIconClicked = { onAction(CreateNoteAction.OnModeChange(NotesMode.READ)) }
-            )
         }
     }
 }

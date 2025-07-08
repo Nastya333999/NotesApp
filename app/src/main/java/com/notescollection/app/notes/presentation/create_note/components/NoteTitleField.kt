@@ -23,6 +23,7 @@ fun NoteTitleField(
     readOnly: Boolean,
     textStyle: TextStyle = MaterialTheme.typography.titleLarge,
     placeHolder: @Composable () -> Unit,
+    maxLines : Int = Int.MAX_VALUE,
     modifier: Modifier = Modifier
 ) {
     TextField(
@@ -33,7 +34,7 @@ fun NoteTitleField(
             .focusRequester(focusRequester)
             .windowInsetsPadding(WindowInsets.displayCutout),
         placeholder = { placeHolder.invoke() },
-        maxLines = 1,
+        maxLines = maxLines,
         colors = TextFieldDefaults.colors().copy(
             focusedContainerColor = MaterialTheme.colorScheme.surface,
             unfocusedContainerColor = MaterialTheme.colorScheme.surface,
