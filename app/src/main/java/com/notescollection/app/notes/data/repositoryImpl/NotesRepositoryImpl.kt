@@ -76,7 +76,7 @@ class NotesRepositoryImpl @Inject constructor(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override suspend fun createNote(title: String, description: String): ResultWrapper<Unit> {
+    override suspend fun createNote(title: String, description: String): ResultWrapper<NoteModel> {
         val now = DateTimeFormatter.ISO_INSTANT.format(Instant.now())
         val note = NoteModel(
             id = UUID.randomUUID().toString(),
@@ -92,12 +92,12 @@ class NotesRepositoryImpl @Inject constructor(
 
         return appScope.async {
             try {
-                notesApi.createNote(note.toRequest())
+                val result = notesApi.createNote(note.toRequest())
                 notesLocalDataSource.updateNote(note.copy(isSyn = true))
-                ResultWrapper.Success(Unit)
+                ResultWrapper.Success(result.toModel())
             } catch (e: IOException) {
                 notesLocalDataSource.insertNote(note.copy(isSyn = false))
-                ResultWrapper.Success(Unit)
+                ResultWrapper.Success(note)
             } catch (e: Exception) {
                 ResultWrapper.Error(e.localizedMessage ?: "Unknown error", e)
             }

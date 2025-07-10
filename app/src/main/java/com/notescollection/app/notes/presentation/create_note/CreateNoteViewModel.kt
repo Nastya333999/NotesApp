@@ -2,6 +2,7 @@ package com.notescollection.app.notes.presentation.create_note
 
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
@@ -51,34 +52,17 @@ class CreateNoteViewModel @Inject constructor(
         when (action) {
             is CreateNoteAction.OnCancelClick -> {
                 viewModelScope.launch {
-                    if (state.value.noteForChange == null) {
-                        _eventChannel.send(CreateNoteEvent.OnCancelClick)
-                    }
+                    _eventChannel.send(CreateNoteEvent.OnCancelClick)
                 }
             }
 
-            is CreateNoteAction.OnSaveClick -> {
-                val currentState = _state.value
-                val title = currentState.title.text
-                if (currentState.noteForChange == null) {
-                    createNote(title, currentState.description.text)
-                } else {
-                    updateNote(
-                        noteModel = NoteModel(
-                            id = currentState.noteForChange.id,
-                            title = title,
-                            content = currentState.description.text,
-                            createdAt = currentState.noteForChange.createdAt,
-                            lastEditedAt = currentState.noteForChange.lastEditedAt,
-                            isSyn = false
-                        )
-                    )
-                }
-            }
+            is CreateNoteAction.OnSaveClick -> onSaveClick()
 
             is CreateNoteAction.OnDescriptionChange -> {
-                _state.update {
-                    it.copy(description = action.description)
+                viewModelScope.launch {
+                    _state.update {
+                        it.copy(description = action.description)
+                    }
                 }
             }
 
@@ -106,17 +90,47 @@ class CreateNoteViewModel @Inject constructor(
         }
     }
 
+    private fun onSaveClick() {
+        val currentState = _state.value
+        val title = currentState.title.text
+
+        if (currentState.noteForChange == null) {
+            createNote(
+                title = title,
+                description = currentState.description.text
+            )
+            Log.e("sdsddfgv", "${_state.value}")
+        } else {
+            updateNote(
+                noteModel = NoteModel(
+                    id = currentState.noteForChange.id,
+                    title = title,
+                    content = currentState.description.text,
+                    createdAt = currentState.noteForChange.createdAt,
+                    lastEditedAt = currentState.noteForChange.lastEditedAt,
+                    isSyn = false
+                )
+            )
+        }
+    }
+
     private fun updateNote(noteModel: NoteModel) {
         viewModelScope.launch {
             val result = notesRepository.updateNote(note = noteModel)
             when (result) {
                 is ResultWrapper.Error -> {}
-                is ResultWrapper.Success<*> -> _eventChannel.send(CreateNoteEvent.OnCancelClick)
+                is ResultWrapper.Success<*> -> {
+                    viewModelScope.launch {
+                        _state.update { state ->
+                            state.copy(noteMode = NotesMode.READ)
+                        }
+                    }
+                }
             }
         }
     }
 
-    fun createNote(title: String, description: String) {
+    private fun createNote(title: String, description: String) {
         viewModelScope.launch {
             val result = notesRepository.createNote(
                 title = title,
@@ -124,9 +138,17 @@ class CreateNoteViewModel @Inject constructor(
             )
             when (result) {
                 is ResultWrapper.Error -> {}
-                is ResultWrapper.Success<*> -> _eventChannel.send(CreateNoteEvent.OnCancelClick)
+                is ResultWrapper.Success<NoteModel> -> {
+                    viewModelScope.launch {
+                        _state.update { state ->
+                            state.copy(
+                                noteMode = NotesMode.READ,
+                                noteForChange = result.data.toUiModel(context)
+                            )
+                        }
+                    }
+                }
             }
-
         }
     }
 
@@ -139,7 +161,7 @@ class CreateNoteViewModel @Inject constructor(
                 is ResultWrapper.Success -> {
                     val noteModel = result.data
                     if (noteModel != null) {
-                        val uiModel = noteModel.toUiModel()
+                        val uiModel = noteModel.toUiModel(context)
                         _state.update {
                             it.copy(
                                 noteForChange = uiModel,
@@ -159,7 +181,7 @@ class CreateNoteViewModel @Inject constructor(
         }
     }
 
-    fun initNote() {
+    private fun initNote() {
         val defaultTitle = context.getString(R.string.title_label)
         _state.value = CreateNoteState(
             title = TextFieldValue(

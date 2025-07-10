@@ -6,7 +6,7 @@ import com.notescollection.app.notes.domain.models.ResultWrapper
 import kotlinx.coroutines.flow.Flow
 
 interface NotesRepository {
-    suspend fun createNote(title: String, description: String): ResultWrapper<Unit>
+    suspend fun createNote(title: String, description: String): ResultWrapper<NoteModel>
     suspend fun updateNote(note: NoteModel): ResultWrapper<Unit>
     suspend fun deleteNote(noteId: String): ResultWrapper<Unit>
     suspend fun getNoteById(noteId: String): ResultWrapper<NoteModel?>

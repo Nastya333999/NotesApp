@@ -1,5 +1,6 @@
 package com.notescollection.app.notes.presentation.noteList
 
+import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
@@ -12,6 +13,7 @@ import com.notescollection.app.notes.domain.repository.AuthRepository
 import com.notescollection.app.notes.domain.repository.NotesRepository
 import com.notescollection.app.notes.presentation.noteList.models.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +27,8 @@ import javax.inject.Inject
 @HiltViewModel
 class NoteListViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val notesRepository: NotesRepository
+    private val notesRepository: NotesRepository,
+    @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(NoteListState())
@@ -59,7 +62,7 @@ class NoteListViewModel @Inject constructor(
                         .cachedIn(viewModelScope)
                         .map { pagingData ->
                             pagingData
-                                .map { it.toUiModel() }
+                                .map { it.toUiModel(context = context) }
                                 .filter { note -> !note.isDeleted }
                         }
                 )
@@ -88,7 +91,7 @@ class NoteListViewModel @Inject constructor(
                                         .cachedIn(viewModelScope)
                                         .map { pagingData ->
                                             pagingData
-                                                .map { it.toUiModel() }
+                                                .map { it.toUiModel(context = context) }
                                                 .filter { note -> !note.isDeleted }
                                         }
                                 )

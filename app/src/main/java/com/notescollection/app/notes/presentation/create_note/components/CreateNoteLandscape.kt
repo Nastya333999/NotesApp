@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -37,7 +36,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -75,7 +73,7 @@ fun CreateNoteLandscape(
     ) {
         var showDialog by remember { mutableStateOf(false) }
 
-        if (showDialog) {
+        if (showDialog && state.noteMode in setOf(NotesMode.CREATE, NotesMode.EDIT)) {
             DiscardChangesDialog(
                 onDismiss = { showDialog = false },
                 onDiscardConfirmed = {
@@ -95,16 +93,22 @@ fun CreateNoteLandscape(
         ) {
 
             Row(
-                modifier = Modifier
+                modifier = modifier
                     .fillMaxWidth()
                     .height(IntrinsicSize.Min),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                FadeVisibility(visible = chromeVisible) {
+                FadeVisibility(
+                    visible = chromeVisible,
+                ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         IconButton(onClick = dropUnlessResumed {
                             if (state.noteForChange != null) {
-                                showDialog = true
+                                if (state.noteMode == NotesMode.READ || state.noteMode == NotesMode.CREATE) {
+                                    onAction(CreateNoteAction.OnCancelClick)
+                                } else {
+                                    showDialog = true
+                                }
                             } else {
                                 onAction(CreateNoteAction.OnCancelClick)
                             }
@@ -138,9 +142,8 @@ fun CreateNoteLandscape(
                     focusRequester = focusRequester,
                     readOnly = state.noteMode == NotesMode.READ,
                     modifier = Modifier
-                        .defaultMinSize(minWidth = 540.dp)
-                        .focusRequester(focusRequester)
-                        .padding(horizontal = 16.dp),
+                        .widthIn(max = 540.dp)
+                        .focusRequester(focusRequester),
                     placeHolder = {
                         Text(
                             text = stringResource(R.string.title_label),
@@ -188,29 +191,25 @@ fun CreateNoteLandscape(
                 )
             }
 
-            Box(
-                modifier = Modifier
-                    .widthIn(max = 540.dp)
+            NoteTitleField(
+                title = state.description,
+                onTitleChange = { onAction(CreateNoteAction.OnDescriptionChange(it)) },
+                focusRequester = focusRequester,
+                readOnly = state.noteMode == NotesMode.READ,
+                modifier = modifier
                     .weight(1f)
-            ) {
-                NoteTitleField(
-                    title = state.description,
-                    onTitleChange = { onAction(CreateNoteAction.OnDescriptionChange(it)) },
-                    focusRequester = focusRequester,
-                    readOnly = state.noteMode == NotesMode.READ,
-                    modifier = Modifier.defaultMinSize(minWidth = 540.dp),
-                    textStyle = MaterialTheme.typography.bodyLarge,
-                    placeHolder = {
-                        Row(horizontalArrangement = Arrangement.Start) {
-                            Text(
-                                text = stringResource(R.string.description_label),
-                                style = MaterialTheme.typography.bodyLarge,
-                                textAlign = TextAlign.Start
-                            )
-                        }
+                    .widthIn(max = 540.dp),
+                textStyle = MaterialTheme.typography.bodyLarge,
+                placeHolder = {
+                    Row(horizontalArrangement = Arrangement.Start) {
+                        Text(
+                            text = stringResource(R.string.description_label),
+                            style = MaterialTheme.typography.bodyLarge,
+                            textAlign = TextAlign.Start
+                        )
                     }
-                )
-            }
+                }
+            )
         }
     }
 }
@@ -221,7 +220,7 @@ private fun Preview() {
     NotesAppTheme {
         CreateNoteScreen(
             state = CreateNoteState(),
-            onAction = {}
+            onAction = {},
         )
     }
 }

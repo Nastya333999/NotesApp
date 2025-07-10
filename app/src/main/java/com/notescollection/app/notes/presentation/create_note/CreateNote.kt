@@ -5,7 +5,7 @@ import android.content.pm.ActivityInfo
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +16,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -78,9 +79,14 @@ fun CreateNoteScreen(
     val activity = context as? Activity
 
     LaunchedEffect(state.noteMode) {
-        if (state.noteMode == NotesMode.READ) {
-            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        } else {
+        activity?.requestedOrientation = when (state.noteMode) {
+            NotesMode.READ -> ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            else -> ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
             activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         }
     }
@@ -111,10 +117,10 @@ fun CreateNoteScreen(
             showChromeTemp()
         } else {
             chromeVisible = true
-            autoJob?.cancel(); autoJob = null
+            autoJob?.cancel()
+            autoJob = null
         }
     }
-
 
     Surface(
         modifier = Modifier
@@ -126,14 +132,19 @@ fun CreateNoteScreen(
         StatusBarStyle()
 
         Box(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .pointerInput(isReader) {
                     if (isReader) {
-                        detectTapGestures(
-                            onTap = { showChromeTemp() }
-                        )
+                        awaitPointerEventScope {
+                            while (true) {
+                                awaitFirstDown(requireUnconsumed = false)
+                                showChromeTemp()
+                            }
+                        }
                     }
                 }
+
         ) {
             val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
             val deviceConfiguration = DeviceConfiguration.fromWindowSizeClass(windowSizeClass)
@@ -165,9 +176,9 @@ fun CreateNoteScreen(
                 }
             }
 
-            content()
+            content.invoke()
 
-            if (state.noteMode != NotesMode.CREATE) {
+            if (state.noteMode != NotesMode.CREATE && state.noteMode != NotesMode.EDIT) {
                 FadeVisibility(
                     visible = chromeVisible,
                     blockPointer = false,

@@ -45,6 +45,6 @@ fun NoteTitleField(
             unfocusedTextColor = MaterialTheme.colorScheme.onSurface
         ),
         textStyle = textStyle,
-        readOnly = readOnly
+        readOnly = readOnly,
     )
 }

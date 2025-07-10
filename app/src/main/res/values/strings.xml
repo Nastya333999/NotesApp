@@ -60,6 +60,7 @@
     <string name="date_created_title">Date created</string>
     <string name="last_edited_title">Last edited</string>
     <string name="tool_bar_back_text">All notes</string>
+    <string name="just_now">Just now</string>
 
     // Settings
     <string name="settings_title">Settings</string>
