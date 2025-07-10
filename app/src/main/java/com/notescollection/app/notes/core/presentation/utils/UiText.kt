@@ -1,14 +1,14 @@
-package com.notescollection.app.core.presentation.utils
+package com.notescollection.app.notes.core.presentation.utils
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.TextRange
 
 @Stable
 interface UiText {
-
-    data class Dynamic(val value: String) : UiText
 
     @Stable
     data class StringResource(
@@ -37,9 +37,10 @@ interface UiText {
     @Composable
     fun asString(): String {
         return when (this) {
-            is Dynamic -> value
             is StringResource -> stringResource(id, *args)
             else -> ""
         }
     }
 }
+
+fun String.asTFV() = TextFieldValue(this, TextRange(this.length))

@@ -19,19 +19,21 @@ import androidx.compose.ui.text.input.TextFieldValue
 fun NoteTitleField(
     title: TextFieldValue,
     onTitleChange: (TextFieldValue) -> Unit,
-    focusRequester: FocusRequester,
+    focusRequester: FocusRequester? = null,
     readOnly: Boolean,
     textStyle: TextStyle = MaterialTheme.typography.titleLarge,
     placeHolder: @Composable () -> Unit,
     maxLines : Int = Int.MAX_VALUE,
     modifier: Modifier = Modifier
 ) {
+    val focusMod = if (focusRequester != null) Modifier.focusRequester(focusRequester)
+    else Modifier
     TextField(
         value = title,
         onValueChange = { onTitleChange(it) },
         modifier = modifier
             .fillMaxWidth()
-            .focusRequester(focusRequester)
+            .then(focusMod)
             .windowInsetsPadding(WindowInsets.displayCutout),
         placeholder = { placeHolder.invoke() },
         maxLines = maxLines,

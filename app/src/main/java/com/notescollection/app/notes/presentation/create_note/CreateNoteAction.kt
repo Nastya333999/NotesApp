@@ -7,6 +7,5 @@ sealed interface CreateNoteAction {
     data class OnDescriptionChange(val description: TextFieldValue) : CreateNoteAction
     data object OnSaveClick : CreateNoteAction
     data object OnCancelClick : CreateNoteAction
-    data object NavigateBack : CreateNoteAction
     data class OnModeChange(val mode: NotesMode) : CreateNoteAction
 }

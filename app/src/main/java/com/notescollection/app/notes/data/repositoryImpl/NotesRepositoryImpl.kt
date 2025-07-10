@@ -105,13 +105,13 @@ class NotesRepositoryImpl @Inject constructor(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override suspend fun updateNote(note: NoteModel): ResultWrapper<Unit> = try {
+    override suspend fun updateNote(note: NoteModel): ResultWrapper<NoteModel> = try {
         val updatedAt = DateTimeFormatter.ISO_INSTANT.format(Instant.now())
         val noteForUpdate = note.copy(lastEditedAt = updatedAt)
 
-        notesApi.updateNote(noteForUpdate.toRequest())
+        val result = notesApi.updateNote(noteForUpdate.toRequest())
         notesLocalDataSource.updateNote(noteForUpdate.copy(isSyn = true))
-        ResultWrapper.Success(Unit)
+        ResultWrapper.Success(result.toModel())
     } catch (e: Exception) {
         val updatedNote = note.copy(
             lastEditedAt = DateTimeFormatter.ISO_INSTANT.format(Instant.now()),

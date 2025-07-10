@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.dropUnlessResumed
 import com.notescollection.app.R
+import com.notescollection.app.notes.core.presentation.utils.asTFV
 import com.notescollection.app.notes.core.presentation.designsystem.theme.Grotesk
 import com.notescollection.app.notes.core.presentation.designsystem.theme.NotesAppTheme
 import com.notescollection.app.notes.core.presentation.utils.ScreenSizesPreview
@@ -78,7 +79,7 @@ fun CreateNoteLandscape(
                 onDismiss = { showDialog = false },
                 onDiscardConfirmed = {
                     showDialog = false
-                    onAction(CreateNoteAction.NavigateBack)
+                    onAction(CreateNoteAction.OnCancelClick)
                 }
             )
         }
@@ -102,17 +103,20 @@ fun CreateNoteLandscape(
                     visible = chromeVisible,
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        IconButton(onClick = dropUnlessResumed {
-                            if (state.noteForChange != null) {
-                                if (state.noteMode == NotesMode.READ || state.noteMode == NotesMode.CREATE) {
-                                    onAction(CreateNoteAction.OnCancelClick)
-                                } else {
-                                    showDialog = true
+                        IconButton(
+                            onClick = dropUnlessResumed {
+                                when (state.noteMode) {
+                                    NotesMode.CREATE -> {
+                                        showDialog = true
+                                    }
+
+                                    NotesMode.READ -> onAction(CreateNoteAction.OnCancelClick)
+                                    NotesMode.EDIT -> {
+                                        showDialog = true
+                                    }
                                 }
-                            } else {
-                                onAction(CreateNoteAction.OnCancelClick)
                             }
-                        }) {
+                        ) {
                             Icon(
                                 imageVector = Icons.Default.Clear,
                                 contentDescription = "Cancel",
@@ -137,7 +141,7 @@ fun CreateNoteLandscape(
                 Spacer(modifier = Modifier.weight(1f))
 
                 NoteTitleField(
-                    title = state.title,
+                    title = remember(state.note?.title) { (state.note?.title ?: "").asTFV() },
                     onTitleChange = { onAction(CreateNoteAction.OnTitleChange(it)) },
                     focusRequester = focusRequester,
                     readOnly = state.noteMode == NotesMode.READ,
@@ -155,20 +159,22 @@ fun CreateNoteLandscape(
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                Text(
-                    text = stringResource(R.string.save_note_text).uppercase(),
-                    style = TextStyle(
-                        fontFamily = Grotesk,
-                        fontWeight = FontWeight(700),
-                        fontSize = 17.sp
-                    ),
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier
-                        .clickable(
-                            onClick = dropUnlessResumed { { onAction(CreateNoteAction.OnSaveClick) } }
-                        )
-                        .padding(end = 16.dp)
-                )
+                if (state.noteMode != NotesMode.READ) {
+                    Text(
+                        text = stringResource(R.string.save_note_text).uppercase(),
+                        style = TextStyle(
+                            fontFamily = Grotesk,
+                            fontWeight = FontWeight(700),
+                            fontSize = 17.sp
+                        ),
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .clickable(
+                                onClick = dropUnlessResumed { { onAction(CreateNoteAction.OnSaveClick) } }
+                            )
+                            .padding(end = 16.dp)
+                    )
+                }
             }
 
             HorizontalDivider(
@@ -179,8 +185,8 @@ fun CreateNoteLandscape(
 
             if (state.noteMode == NotesMode.READ) {
                 NoteMetadata(
-                    dateCreated = state.noteForChange?.createdAt ?: "",
-                    lastModified = state.noteForChange?.lastEditedAt ?: "",
+                    dateCreated = state.note?.createdAt ?: "",
+                    lastModified = state.note?.lastEditedAt ?: "",
                     modifier = Modifier.widthIn(max = 540.dp)
                 )
 
@@ -192,9 +198,10 @@ fun CreateNoteLandscape(
             }
 
             NoteTitleField(
-                title = state.description,
+                title = remember(state.note?.description) {
+                    (state.note?.description ?: "").asTFV()
+                },
                 onTitleChange = { onAction(CreateNoteAction.OnDescriptionChange(it)) },
-                focusRequester = focusRequester,
                 readOnly = state.noteMode == NotesMode.READ,
                 modifier = modifier
                     .weight(1f)

@@ -34,6 +34,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import com.notescollection.app.notes.core.presentation.utils.asTFV
 
 @Composable
 fun CreateNotePortrait(
@@ -62,7 +63,7 @@ fun CreateNotePortrait(
                 onDismiss = { showDialog = false },
                 onDiscardConfirmed = {
                     showDialog = false
-                    onAction(CreateNoteAction.NavigateBack)
+                    onAction(CreateNoteAction.OnCancelClick)
                 }
             )
         }
@@ -82,10 +83,10 @@ fun CreateNotePortrait(
                     modifier = Modifier.fillMaxWidth(),
                     onRightTextClick = { onAction(CreateNoteAction.OnSaveClick) },
                     onCancelClick = {
-                        if (state.noteForChange != null) {
-                            showDialog = true
-                        } else {
-                            onAction(CreateNoteAction.OnCancelClick)
+                        when (state.noteMode) {
+                            NotesMode.CREATE -> { showDialog = true }
+                            NotesMode.READ -> onAction(CreateNoteAction.OnCancelClick)
+                            NotesMode.EDIT -> { showDialog = true }
                         }
                     },
                     leftTextPositioned = if (state.noteMode != NotesMode.CREATE) R.string.tool_bar_back_text else null
@@ -93,7 +94,7 @@ fun CreateNotePortrait(
             }
 
             NoteTitleField(
-                title = state.title,
+                title = remember(state.note?.title) { (state.note?.title ?: "").asTFV() },
                 onTitleChange = { onAction(CreateNoteAction.OnTitleChange(it)) },
                 focusRequester = focusRequester,
                 readOnly = state.noteMode == NotesMode.READ,
@@ -114,16 +115,15 @@ fun CreateNotePortrait(
 
             if (state.noteMode == NotesMode.READ) {
                 NoteMetadata(
-                    dateCreated = state.noteForChange?.createdAt ?: "",
-                    lastModified = state.noteForChange?.lastEditedAt ?: "",
+                    dateCreated = state.note?.createdAt ?: "",
+                    lastModified = state.note?.lastEditedAt ?: "",
                 )
                 HorizontalDivider(modifier = Modifier.background(color = MaterialTheme.colorScheme.onSurface))
             }
 
             NoteTitleField(
-                title = state.description,
+                title = remember(state.note?.description) { (state.note?.description ?: "").asTFV() },
                 onTitleChange = { onAction(CreateNoteAction.OnDescriptionChange(it)) },
-                focusRequester = focusRequester,
                 readOnly = state.noteMode == NotesMode.READ,
                 modifier = Modifier
                     .fillMaxWidth()
