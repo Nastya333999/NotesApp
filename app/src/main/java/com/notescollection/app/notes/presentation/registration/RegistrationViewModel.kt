@@ -12,6 +12,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -25,20 +26,8 @@ class RegistrationViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
-    private var hasLoadedInitialData = false
-
     private val _state = MutableStateFlow(RegistrationState())
-    val state = _state
-        .onStart {
-            if (!hasLoadedInitialData) {
-                hasLoadedInitialData = true
-            }
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = RegistrationState()
-        )
+    val state: StateFlow<RegistrationState> = _state
 
     private val eventChannel = Channel<RegistrationEvent>()
     val events = eventChannel.receiveAsFlow()
@@ -57,7 +46,9 @@ class RegistrationViewModel @Inject constructor(
                         email = current.email,
                         password = current.password
                     )) {
-                        is ResultWrapper.Error -> {}
+                        is ResultWrapper.Error -> {
+                            eventChannel.send(RegistrationEvent.ShowToast(result.message))
+                        }
 
                         is ResultWrapper.Success<*> -> {
                             _state.update {

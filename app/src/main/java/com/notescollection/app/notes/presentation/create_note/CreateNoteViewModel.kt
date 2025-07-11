@@ -104,7 +104,7 @@ class CreateNoteViewModel @Inject constructor(
                 }
             }
             is ResultWrapper.Error -> {
-                // TODO: handle error (e.g. emit event or show error UI)
+                send(CreateNoteEvent.ShowToast(res.message))
             }
         }
     }
@@ -130,7 +130,7 @@ class CreateNoteViewModel @Inject constructor(
 
         when (result) {
             is ResultWrapper.Error -> {
-                // TODO()
+                send(CreateNoteEvent.ShowToast(result.message))
             }
             is ResultWrapper.Success<NoteModel> -> {
                 val saved = result.data.toUiModel(context)

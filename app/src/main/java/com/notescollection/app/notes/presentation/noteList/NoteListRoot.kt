@@ -4,23 +4,29 @@ import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.notescollection.app.notes.core.presentation.designsystem.components.StatusBarStyle
 import com.notescollection.app.notes.core.presentation.designsystem.theme.NotesAppTheme
 import com.notescollection.app.notes.core.presentation.utils.DeviceConfiguration
+import com.notescollection.app.notes.core.presentation.utils.LoadingUiState
 import com.notescollection.app.notes.core.presentation.utils.ObserveAsEvents
 import com.notescollection.app.notes.core.presentation.utils.ScreenSizesPreview
+import com.notescollection.app.notes.presentation.create_note.NoteUiState
 import com.notescollection.app.notes.presentation.noteList.components.LandscapeOrientationNotesListScreen
 import com.notescollection.app.notes.presentation.noteList.components.PortraitNoteListScreen
 
@@ -53,10 +59,17 @@ fun NoteListRoot(
         }
     }
 
-    NoteListScreen(
-        state = state,
-        onAction = viewModel::onAction
-    )
+    when (state) {
+        is LoadingUiState.Loaded<NoteListState> ->
+            NoteListScreen(
+                state = (state as LoadingUiState.Loaded<NoteListState>).data,
+                onAction = viewModel::onAction
+            )
+
+        is LoadingUiState.Loading -> Box(Modifier.fillMaxSize()) {
+            CircularProgressIndicator(Modifier.align(Alignment.Center))
+        }
+    }
 }
 
 @SuppressLint("ContextCastToActivity")

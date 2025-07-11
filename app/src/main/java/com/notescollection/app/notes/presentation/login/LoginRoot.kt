@@ -1,5 +1,6 @@
 package com.notescollection.app.notes.presentation.login
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +13,7 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -30,6 +32,7 @@ fun LoginRoot(
 ) {
     val viewModel: LoginViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
@@ -39,6 +42,10 @@ fun LoginRoot(
 
             is LoginEvent.OnRegisterClick -> {
                 onRegisterClick()
+            }
+
+            is LoginEvent.ShowToast -> {
+                Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
             }
         }
     }

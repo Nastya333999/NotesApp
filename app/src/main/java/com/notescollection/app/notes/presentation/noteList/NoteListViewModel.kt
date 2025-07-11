@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import androidx.paging.filter
 import androidx.paging.map
+import com.notescollection.app.notes.core.presentation.utils.LoadingUiState
+import com.notescollection.app.notes.core.presentation.utils.updateLoadedState
 import com.notescollection.app.notes.domain.models.ResultWrapper
 import com.notescollection.app.notes.domain.repository.AuthRepository
 import com.notescollection.app.notes.domain.repository.NotesRepository
@@ -31,8 +33,8 @@ class NoteListViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(NoteListState())
-    val state: StateFlow<NoteListState> = _state
+    private val _state = MutableStateFlow<LoadingUiState<NoteListState>>(LoadingUiState.Loading)
+    val state: StateFlow<LoadingUiState<NoteListState>> = _state
 
     private val eventChannel = Channel<NoteListEvent>()
     val events = eventChannel.receiveAsFlow()
@@ -44,28 +46,25 @@ class NoteListViewModel @Inject constructor(
     private fun loadInitialData() {
         viewModelScope.launch(Dispatchers.IO) {
             val userInitials = authRepository.getUserFirstNaeLetter()
-            _state.update {
-                it.copy(
-                    userName = userInitials,
-                )
-            }
+            _state.value = LoadingUiState.Loaded(
+                NoteListState(userName = userInitials)
+            )
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getNotes() {
         viewModelScope.launch(Dispatchers.IO) {
+            val notes = notesRepository.getPagedNotes()
+                .cachedIn(viewModelScope)
+                .map { pagingData ->
+                    pagingData
+                        .map { it.toUiModel(context = context) }
+                        .filter { note -> !note.isDeleted }
+                }
 
-            _state.update {
-                it.copy(
-                    notesFlow = notesRepository.getPagedNotes()
-                        .cachedIn(viewModelScope)
-                        .map { pagingData ->
-                            pagingData
-                                .map { it.toUiModel(context = context) }
-                                .filter { note -> !note.isDeleted }
-                        }
-                )
+            _state.updateLoadedState { state ->
+                state.copy(notesFlow = notes)
             }
         }
     }
@@ -83,18 +82,20 @@ class NoteListViewModel @Inject constructor(
                 viewModelScope.launch(Dispatchers.IO) {
                     val result = notesRepository.deleteNote(action.note.id)
                     when (result) {
-                        is ResultWrapper.Error -> {}
+                        is ResultWrapper.Error -> {
+                            eventChannel.send(NoteListEvent.ShowToast(result.message))
+                        }
                         is ResultWrapper.Success<*> -> {
-                            _state.update {
-                                it.copy(
-                                    notesFlow = notesRepository.getPagedNotes()
-                                        .cachedIn(viewModelScope)
-                                        .map { pagingData ->
-                                            pagingData
-                                                .map { it.toUiModel(context = context) }
-                                                .filter { note -> !note.isDeleted }
-                                        }
-                                )
+                            val notes = notesRepository.getPagedNotes()
+                                .cachedIn(viewModelScope)
+                                .map { pagingData ->
+                                    pagingData
+                                        .map { it.toUiModel(context = context) }
+                                        .filter { note -> !note.isDeleted }
+                                }
+
+                            _state.updateLoadedState {
+                                it.copy(notesFlow = notes)
                             }
                         }
                     }

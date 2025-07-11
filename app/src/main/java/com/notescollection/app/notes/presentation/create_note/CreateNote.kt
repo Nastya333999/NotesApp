@@ -3,6 +3,7 @@ package com.notescollection.app.notes.presentation.create_note
 import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitFirstDown
@@ -50,6 +51,7 @@ fun CreateNoteRoot(
 ) {
     val viewModel: CreateNoteViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     ObserveAsEvents(viewModel.events) { event: CreateNoteEvent ->
         when (event) {
@@ -59,6 +61,10 @@ fun CreateNoteRoot(
 
             is CreateNoteEvent.OnCancelClick -> {
                 navigateBack()
+            }
+
+            is CreateNoteEvent.ShowToast -> {
+                Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
             }
         }
     }

@@ -27,7 +27,9 @@ class SettingsViewModel @Inject constructor(
                 viewModelScope.launch(Dispatchers.IO) {
                     val result = authRepository.logOut()
                     when (result) {
-                        is ResultWrapper.Error -> {}
+                        is ResultWrapper.Error -> {
+                            eventChannel.send(SettingsEvent.ShowToast(result.message))
+                        }
                         is ResultWrapper.Success<*> -> {
                             notesRepository.deleteAllNotes()
                             eventChannel.send(SettingsEvent.OnBackEvent)

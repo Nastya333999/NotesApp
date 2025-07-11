@@ -65,4 +65,8 @@
     // Settings
     <string name="settings_title">Settings</string>
     <string name="log_out_items">Log out</string>
+
+    // Utils
+    <string name="no_internet">No internet connection</string>
+    <string name="internet_connected">Internet is connected</string>
 </resources>

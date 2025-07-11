@@ -1,42 +1,59 @@
 package com.notescollection.app.notes.presentation.login
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.notescollection.app.R
+import com.notescollection.app.notes.core.presentation.utils.ConnectivityObserver
+import com.notescollection.app.notes.core.presentation.utils.ConnectivityStatus
 import com.notescollection.app.notes.domain.models.ResultWrapper
 import com.notescollection.app.notes.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    connectivityObserver: ConnectivityObserver,
+    @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
-    private var hasLoadedInitialData = false
-
-    private val _state = MutableStateFlow(LoginState())
-    val state = _state
-        .onStart {
-            if (!hasLoadedInitialData) {
-                hasLoadedInitialData = true
-            }
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = LoginState()
-        )
+    private val _state = MutableStateFlow<LoginState>(LoginState())
+    val state: StateFlow<LoginState> = _state
 
     private val eventChannel = Channel<LoginEvent>()
     val events = eventChannel.receiveAsFlow()
+
+    private var lastConnectivityStatus: ConnectivityStatus? = null
+
+    init {
+        viewModelScope.launch {
+            connectivityObserver.observe().collect { status ->
+                if (lastConnectivityStatus == null && status == ConnectivityStatus.Unavailable) {
+                    eventChannel.send(LoginEvent.ShowToast(context.getString(R.string.no_internet)))
+                }
+
+                if (lastConnectivityStatus != null && status != lastConnectivityStatus) {
+                    when (status) {
+                        ConnectivityStatus.Available ->
+                            eventChannel.send(LoginEvent.ShowToast(context.getString(R.string.internet_connected)))
+
+                        ConnectivityStatus.Unavailable ->
+                            eventChannel.send(LoginEvent.ShowToast(context.getString(R.string.no_internet)))
+                    }
+                }
+
+                lastConnectivityStatus = status
+            }
+        }
+    }
 
     fun onAction(action: LoginAction) {
         when (action) {
