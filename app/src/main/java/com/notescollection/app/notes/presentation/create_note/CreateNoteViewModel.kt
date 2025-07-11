@@ -7,6 +7,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.notescollection.app.R
+import com.notescollection.app.notes.core.presentation.utils.LoadingUiState
+import com.notescollection.app.notes.core.presentation.utils.updateLoadedState
 import com.notescollection.app.notes.domain.models.NoteModel
 import com.notescollection.app.notes.domain.models.ResultWrapper
 import com.notescollection.app.notes.domain.repository.NotesRepository
@@ -16,7 +18,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.notescollection.app.notes.presentation.noteList.models.toUiModel
@@ -33,8 +34,8 @@ class CreateNoteViewModel @Inject constructor(
 
     private val noteId: String? = savedStateHandle[NODE_ID]
 
-    private val _state = MutableStateFlow(CreateNoteState())
-    val state: StateFlow<CreateNoteState> = _state
+    private val _state = MutableStateFlow<LoadingUiState<NoteUiState>>(LoadingUiState.Loading)
+    val state: StateFlow<LoadingUiState<NoteUiState>> = _state
 
     private val _events = Channel<CreateNoteEvent>(Channel.BUFFERED)
     val events = _events.receiveAsFlow()
@@ -44,6 +45,9 @@ class CreateNoteViewModel @Inject constructor(
     }
 
     fun onAction(action: CreateNoteAction) {
+        val st = _state.value
+        if (st !is LoadingUiState.Loaded) return
+
         when (action) {
             is CreateNoteAction.OnTitleChange -> update {
                 it.copy(title = action.title.text)
@@ -53,8 +57,8 @@ class CreateNoteViewModel @Inject constructor(
                 it.copy(description = action.description.text)
             }
 
-            is CreateNoteAction.OnModeChange -> _state.update { s ->
-                s.copy(noteMode = action.mode)
+            is CreateNoteAction.OnModeChange -> _state.updateLoadedState { state ->
+                state.copy(noteMode = action.mode)
             }
 
             is CreateNoteAction.OnSaveClick -> save()
@@ -66,42 +70,49 @@ class CreateNoteViewModel @Inject constructor(
     }
 
     private inline fun update(block: (NoteUiModel) -> NoteUiModel) {
-        _state.update { state ->
-            state.copy(note = block(requireNotNull(state.note)))
+        _state.updateLoadedState { state ->
+            state.copy(note = block(state.note))
         }
     }
 
     private fun newNote() {
-        _state.value = CreateNoteState(
-            note = NoteUiModel(
-                id = "",
-                date = "",
-                title = context.getString(R.string.title_label),
-                description = "",
-                createdAt = OffsetDateTime.now().toString(),
-                lastEditedAt = OffsetDateTime.now().toString()
-            ),
-            noteMode = NotesMode.CREATE
+        _state.value = LoadingUiState.Loaded(
+            NoteUiState(
+                note = NoteUiModel(
+                    id = "",
+                    date = "",
+                    title = context.getString(R.string.title_label),
+                    description = "",
+                    createdAt = OffsetDateTime.now().toString(),
+                    lastEditedAt = OffsetDateTime.now().toString()
+                ),
+                noteMode = NotesMode.CREATE
+            )
         )
     }
 
     private fun loadNote(id: String) = viewModelScope.launch {
         when (val res = notesRepository.getNoteById(id)) {
-            is ResultWrapper.Success -> res.data?.let {
-                _state.value = CreateNoteState(
-                    note = it.toUiModel(context),
-                    noteMode = NotesMode.READ
-                )
+            is ResultWrapper.Success -> {
+                res.data?.toUiModel(context)?.let { loadedNote ->
+                    _state.value = LoadingUiState.Loaded(
+                        NoteUiState(
+                            note = loadedNote,
+                            noteMode = NotesMode.READ
+                        )
+                    )
+                }
             }
-
             is ResultWrapper.Error -> {
-                // TODO()
+                // TODO: handle error (e.g. emit event or show error UI)
             }
         }
     }
 
     private fun save() = viewModelScope.launch {
-        val currentNote = requireNotNull(_state.value.note)
+        val loaded = _state.value as? LoadingUiState.Loaded ?: return@launch
+        val currentNote = loaded.data.note
+
         val result = if (currentNote.id.isBlank()) {
             notesRepository.createNote(currentNote.title, currentNote.description)
         } else {
@@ -117,12 +128,20 @@ class CreateNoteViewModel @Inject constructor(
             )
         }
 
-        if (result is ResultWrapper.Success<NoteModel>) {
-            val saved = result.data.toUiModel(context)
-            _state.value = CreateNoteState(
-                note = saved,
-                noteMode = NotesMode.READ
-            )
+        when (result) {
+            is ResultWrapper.Error -> {
+                // TODO()
+            }
+            is ResultWrapper.Success<NoteModel> -> {
+                val saved = result.data.toUiModel(context)
+
+                _state.updateLoadedState { ui ->
+                    ui.copy(
+                        note = saved,
+                        noteMode = NotesMode.READ
+                    )
+                }
+            }
         }
     }
 

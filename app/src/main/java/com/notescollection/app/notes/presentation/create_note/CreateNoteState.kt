@@ -2,8 +2,8 @@ package com.notescollection.app.notes.presentation.create_note
 
 import com.notescollection.app.notes.presentation.noteList.models.NoteUiModel
 
-data class CreateNoteState(
-    val note: NoteUiModel? = null,
+data class NoteUiState(
+    val note: NoteUiModel,
     val noteMode: NotesMode = NotesMode.READ
 )
 

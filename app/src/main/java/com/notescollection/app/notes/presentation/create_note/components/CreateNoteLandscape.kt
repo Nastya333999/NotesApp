@@ -43,16 +43,13 @@ import androidx.lifecycle.compose.dropUnlessResumed
 import com.notescollection.app.R
 import com.notescollection.app.notes.core.presentation.utils.asTFV
 import com.notescollection.app.notes.core.presentation.designsystem.theme.Grotesk
-import com.notescollection.app.notes.core.presentation.designsystem.theme.NotesAppTheme
-import com.notescollection.app.notes.core.presentation.utils.ScreenSizesPreview
 import com.notescollection.app.notes.presentation.create_note.CreateNoteAction
-import com.notescollection.app.notes.presentation.create_note.CreateNoteScreen
-import com.notescollection.app.notes.presentation.create_note.CreateNoteState
+import com.notescollection.app.notes.presentation.create_note.NoteUiState
 import com.notescollection.app.notes.presentation.create_note.NotesMode
 
 @Composable
 fun CreateNoteLandscape(
-    state: CreateNoteState,
+    state: NoteUiState,
     chromeVisible: Boolean,
     onAction: (CreateNoteAction) -> Unit,
     hideChrome: () -> Unit,
@@ -221,13 +218,13 @@ fun CreateNoteLandscape(
     }
 }
 
-@ScreenSizesPreview
-@Composable
-private fun Preview() {
-    NotesAppTheme {
-        CreateNoteScreen(
-            state = CreateNoteState(),
-            onAction = {},
-        )
-    }
-}
+//@ScreenSizesPreview // TODO()
+//@Composable
+//private fun Preview() {
+//    NotesAppTheme {
+//        CreateNoteScreen(
+//            state = CreateNoteState(),
+//            onAction = {},
+//        )
+//    }
+//}

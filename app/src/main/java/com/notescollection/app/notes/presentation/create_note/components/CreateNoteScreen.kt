@@ -28,17 +28,17 @@ import androidx.compose.ui.res.stringResource
 import com.notescollection.app.R
 import com.notescollection.app.notes.core.presentation.designsystem.components.NotesToolBar
 import com.notescollection.app.notes.presentation.create_note.CreateNoteAction
-import com.notescollection.app.notes.presentation.create_note.CreateNoteState
 import com.notescollection.app.notes.presentation.create_note.NotesMode
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import com.notescollection.app.notes.core.presentation.utils.asTFV
+import com.notescollection.app.notes.presentation.create_note.NoteUiState
 
 @Composable
 fun CreateNotePortrait(
-    state: CreateNoteState,
+    state: NoteUiState,
     chromeVisible: Boolean,
     onAction: (CreateNoteAction) -> Unit,
     hideChrome: () -> Unit,
@@ -115,14 +115,14 @@ fun CreateNotePortrait(
 
             if (state.noteMode == NotesMode.READ) {
                 NoteMetadata(
-                    dateCreated = state.note?.createdAt ?: "",
-                    lastModified = state.note?.lastEditedAt ?: "",
+                    dateCreated = state.note.createdAt,
+                    lastModified = state.note.lastEditedAt,
                 )
                 HorizontalDivider(modifier = Modifier.background(color = MaterialTheme.colorScheme.onSurface))
             }
 
             NoteTitleField(
-                title = remember(state.note?.description) { (state.note?.description ?: "").asTFV() },
+                title = remember(state.note.description) { (state.note.description ).asTFV() },
                 onTitleChange = { onAction(CreateNoteAction.OnDescriptionChange(it)) },
                 readOnly = state.noteMode == NotesMode.READ,
                 modifier = Modifier

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
@@ -31,10 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.notescollection.app.notes.core.presentation.designsystem.components.StatusBarStyle
-import com.notescollection.app.notes.core.presentation.designsystem.theme.NotesAppTheme
 import com.notescollection.app.notes.core.presentation.utils.DeviceConfiguration
+import com.notescollection.app.notes.core.presentation.utils.LoadingUiState
 import com.notescollection.app.notes.core.presentation.utils.ObserveAsEvents
-import com.notescollection.app.notes.core.presentation.utils.ScreenSizesPreview
 import com.notescollection.app.notes.presentation.create_note.components.CreateNotePortrait
 import com.notescollection.app.notes.presentation.create_note.components.CreateNoteLandscape
 import com.notescollection.app.notes.presentation.create_note.components.FadeVisibility
@@ -63,16 +63,23 @@ fun CreateNoteRoot(
         }
     }
 
-    CreateNoteScreen(
-        state = state,
-        onAction = viewModel::onAction
-    )
+    when (state) {
+
+        is LoadingUiState.Loaded<NoteUiState> -> CreateNoteScreen(
+            state = (state as LoadingUiState.Loaded<NoteUiState>).data,
+            onAction = viewModel::onAction
+        )
+
+        is LoadingUiState.Loading -> Box(Modifier.fillMaxSize()) {
+            CircularProgressIndicator(Modifier.align(Alignment.Center))
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun CreateNoteScreen(
-    state: CreateNoteState,
+    state: NoteUiState,
     onAction: (CreateNoteAction) -> Unit,
 ) {
     val context = LocalContext.current
@@ -196,13 +203,13 @@ fun CreateNoteScreen(
     }
 }
 
-@ScreenSizesPreview
-@Composable
-private fun Preview() {
-    NotesAppTheme {
-        CreateNoteScreen(
-            state = CreateNoteState(),
-            onAction = {}
-        )
-    }
-}
+//@ScreenSizesPreview // TODO()
+//@Composable
+//private fun Preview() {
+//    NotesAppTheme {
+//        CreateNoteScreen(
+//            state = NoteUiState(),
+//            onAction = {}
+//        )
+//    }
+//}
